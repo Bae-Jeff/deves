@@ -360,6 +360,14 @@ if($cancel_change) {
 $sql .= " where od_id = '$od_id' ";
 sql_query($sql);
 
+// Extends : 주문 처리 - 2024.06.13
+if($_POST['ct_status'] == '입금'){
+
+    confirmOrderExtend($od_id, $_POST['ct_status']);
+}elseif (in_array($_POST['ct_status'].['취소','환불','품절'])){
+    confirmOrderExtend($od_id, $_POST['ct_status'],'C');
+}
+
 $qstr = "sort1=$sort1&amp;sort2=$sort2&amp;sel_field=$sel_field&amp;search=$search&amp;page=$page";
 
 $url = "./orderform.php?od_id=$od_id&amp;$qstr";
