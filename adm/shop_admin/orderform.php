@@ -254,11 +254,17 @@ $is_use_partner = (defined('USE_PARTNER') && USE_PARTNER) ? true : false;
                 // 소계
                 $ct_price['stotal'] = $opt_price * $opt['ct_qty'];
                 $ct_point['stotal'] = $opt['ct_point'] * $opt['ct_qty'];
+                
+                $itemVers = getItemVersionConfig($row['it_id']);
+                $trExt = '';
+                if(!empty($itemVers)){
+                    $trExt = 'rowspan="2"';
+                }
             ?>
             <tr>
                 <?php if($k == 0) { ?>
 				<?php if($is_use_partner) { ?>
-				<td class="td_mng" rowspan="<?php echo $rowspan; ?>">
+				<td  <?php echo $trExt?> class="td_mng" rowspan="<?php echo $rowspan; ?>">
 					<nobr>
 						<?php 
 							if ($row['pt_id']) {
@@ -320,6 +326,23 @@ $is_use_partner = (defined('USE_PARTNER') && USE_PARTNER) ? true : false;
                 <td class="td_mng"><?php echo get_yn($opt['ct_point_use']); ?></td>
                 <td class="td_mng"><?php echo get_yn($opt['ct_stock_use']); ?></td>
             </tr>
+            <?php 
+            if($trExt !== ""){
+            ?>
+            <tr>
+            	<td colspan="2">버전</td>
+            	<td><?php echo $itemVers['item_version']?></td>
+            	<td colspan="3">구매 수량</td>
+            	<td><?php echo $itemVers['item_buy_count']?></td>
+            	<td colspan="3">다운로드 일수</dt>
+            	<td><?php echo $itemVers['item_download_days']?></td>
+            	<td colspan="3">사용 일수</td>
+            	<td><?php echo $itemVers['item_use_days']?></td>
+            	
+            </tr>
+            <?php 
+            }
+            ?>
             <?php
                 $chk_cnt++;
             }

@@ -15,7 +15,7 @@ function mapOrderExtends(){
 function confirmOrderExtend($order_id, $order_status, $status = 'C'){
     if($order_status == '입금'){
         $status = "S";
-        $sqlUpdate =  "
+       echo  $sqlUpdate =  "
             UPDATE shop_order_extend
             SET 
                 order_extends_status = '".$status."'
@@ -24,7 +24,7 @@ function confirmOrderExtend($order_id, $order_status, $status = 'C'){
         ";
         return sql_query($sqlUpdate);
     }else{
-        $sqlUpdate =  "
+       echo $sqlUpdate =  "
             UPDATE shop_order_extend
             SET
                 order_extends_status = '".$status."'
@@ -32,7 +32,6 @@ function confirmOrderExtend($order_id, $order_status, $status = 'C'){
                 order_id = '".$order_id."'
         ";
         return sql_query($sqlUpdate);
-        return false;
     }
 }
 function addOrderExtends($params){
@@ -85,7 +84,6 @@ function addOrderExtends($params){
             )
             
         ";
-
         return sql_query($insertSql);
     }
 }

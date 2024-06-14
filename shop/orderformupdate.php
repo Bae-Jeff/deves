@@ -2,7 +2,6 @@
 include_once('./_common.php');
 include_once(G5_LIB_PATH.'/mailer.lib.php');
 
-
 //이니시스 lpay 요청으로 왔다면 $default['de_pg_service'] 값을 이니시스로 변경합니다.
 if( $od_settle_case == 'lpay' ){
     $default['de_pg_service'] = 'inicis';
@@ -478,6 +477,7 @@ else
 // 주문번호를 얻는다.
 $od_id = get_session('ss_order_id');
 
+
 $od_escrow = 0;
 if($escw_yn == 'Y')
     $od_escrow = 1;
@@ -569,10 +569,10 @@ $sql = " insert {$g5['g5_shop_order_table']}
                 od_test           = '{$default['de_card_test']}'
                 ";
 $result = sql_query($sql, false);
-
+err();
 
 #################################### extends
-foreach ($it_id as $iKey => $itemId){
+foreach ($_POST['it_id'] as $iKey => $itemId){
     $itemVersion = getItemVersionConfig($itemId);
     $params = array(
         "order_item_id" => $itemId,
@@ -584,7 +584,10 @@ foreach ($it_id as $iKey => $itemId){
     );
     
     addOrderExtends($params);
+    
+    
 }
+
 ####################################
 
 // 주문정보 입력 오류시 결제 취소
@@ -728,7 +731,7 @@ if($is_member) {
 apms_order($od_id, $od_status, $member['mb_recommend']);
 
 // Extends : 주문 처리 - 2024.06.13
-confirmOrderExtend($od_id, $od_status);
+confirmOrderExtend($od_id, $od_status,"R");
 
 // 쿠폰업데이트
 apms_coupon_update($member['mb_id']);
