@@ -1,0 +1,19 @@
+@charset "utf-8";
+
+/* List */
+.list-media { margin:0; }
+.list-item { border-bottom:1px solid #ddd; padding:15px 15px; }
+.list-item.first-li { border-top:1px solid #ddd; }
+.list-item.odd-li { background-color:#F6F6F6; }
+.list-item .img-left { margin-right:15px; }
+.list-item .img-right { margin-left:15px; }
+.list-item h2.media-heading { display:block; font-size:16px; line-height:22px; margin:0px; padding:0px 0px 4px; }
+.list-item .list-details { margin-top:0px; padding:0px 0px; font-size:11px; }
+.list-item .list-details .member, .list-item .list-details .guest { color:#787878 !important; }
+.list-item .list-cont { margin:0px; padding:0; line-height:20px; }
+.list-item .list-sp { margin:0 3px; color:#ddd; font-size:11px; }
+
+.list-item .img { position:relative; }
+.list-item .list-ballon::before { bottom:-5px; right:4px; border-width: 7px 3px 0; border-color: #fff transparent; display: block; width: 0px; content: ""; position: absolute; border-style: solid; }
+.list-item .list-ballon { position:absolute; bottom:10px; right:5px; width:20px; height:20px; line-height:20px; text-align:center; background:#fff; border-radius:10px; }
+

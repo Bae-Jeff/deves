@@ -1,0 +1,49 @@
+@charset "utf-8";
+
+/* Top Search */
+.list-tsearch { border:1px solid #ddd; background:#fafafa; padding:20px 15px 3px; margin-bottom:15px; }
+
+/* Category */
+.list-category .tabs { margin-bottom:20px; }
+.list-category .dropdown { margin-bottom:20px; }
+.list-category .active a, .list-category .selected a { color:crimson; font-weight:bold !important; }
+
+/* List */
+.list-wrap { width:100%; }
+.list-wrap .btn { background:#fff !important; border:1px solid #ddd !important; border-radius:3px !important; color:#333 !important; }
+
+.list-sp { width:15px; }
+.list-head { margin:0px; padding:0px 15px; }
+.list-head .btn { background:#fff !important; border:1px solid #ddd !important; border-radius:3px !important; color:#333 !important; }
+
+.list-admin { text-align:center; margin:15px 0px; }
+.list-admin .btn { margin-left:5px !important; }
+.list-admin .btn:first-child { margin-left:0px !important; }
+.list-wrap .list-btn { padding:0px 15px; }
+.list-btn .sort-drop { min-width:120px !important; left:auto !important; right:0px !important; }
+.list-btn .sort-drop .sort a { color:crimson !important; font-weight:bold !important; }
+.is-pc .ko .list-btn .sort-drop { font-size: 12px; }
+
+/* Page */
+.list-wrap .pagination a, .view-wrap .pagination a { color:#333 !important; }
+.list-wrap .pagination .active a, .view-wrap .pagination .active a { color:#fff !important; }
+
+/* View */
+.view-wrap { width:100%; overflow:hidden; }
+.view-wrap.view-modal { padding:5px; margin:0px; }
+.view-btn { margin:0px 0px 30px; padding:0px 15px; }
+.view-btn i { margin-right:2px; }
+
+.view-btn .btn { background:#fff !important; border:1px solid #ddd !important; border-radius:5px !important; color:#333 !important; margin-left:5px !important; margin-bottom:5px !important; }
+
+/* Write */
+.write-wrap { width:100%; overflow:hidden; }
+
+@media all and (max-width:460px) {
+	.responsive .view-btn i { margin-right:0px; }
+}
+
+.list-btn .pull-right .btn { margin-left:5px !important; }
+.list-btn .pull-right .btn:first-child { margin-left:0px !important; }
+.list-btn .pull-left .btn { margin-right:5px !important; }
+.list-btn .pull-left .btn:last-child { margin-right:0px !important; }

@@ -1,0 +1,16 @@
+@charset "utf-8";
+
+.brex-post-webzine { overflow:hidden; line-height:20px; }
+.brex-post-webzine .txt-normal { letter-spacing:0; }
+.brex-post-webzine .txt-short { letter-spacing:-1px; padding-right:1px; }
+.brex-post-webzine .post-vicon { position:absolute; left:6px; top:6px; color: #fff; font-size:20px; z-index:1; text-shadow: 1px 1px 1px #000; }
+.brex-post-webzine .post-none { padding:50px 10px; text-align:center; color:#888; }
+.brex-post-webzine .post-row { float:left; overflow:hidden; }
+.brex-post-webzine .post-list { overflow:hidden; }
+.brex-post-webzine .post-image { position:relative; overflow:hidden; border:1px solid #ddd; }
+.brex-post-webzine .post-content { margin:4px 0px 0px; overflow:hidden; }
+.brex-post-webzine .post-subject { overflow:hidden; letter-spacing:-1px; padding-right:1px; }
+.brex-post-webzine .post-content-text { color:#888; }
+.brex-post-webzine .post-text { font-size:10px; color:#888; margin-top:-5px; }
+.brex-post-webzine .post-sp { color:#ccc; margin:0px 4px; }
+.is-pc .ko .brex-post-webzine .post-ko { font-size:11px; }

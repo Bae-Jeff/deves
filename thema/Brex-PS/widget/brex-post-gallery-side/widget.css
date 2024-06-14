@@ -1,0 +1,15 @@
+@charset "utf-8";
+
+.brex-post-gallery-side { overflow:hidden; line-height:20px; }
+.brex-post-gallery-side .txt-normal { letter-spacing:0; }
+.brex-post-gallery-side .txt-short { letter-spacing:-1px; padding-right:1px; }
+.brex-post-gallery-side .post-vicon { position:absolute; left:6px; top:6px; color: #fff; font-size:20px; z-index:1; text-shadow: 1px 1px 1px #000; }
+.brex-post-gallery-side .post-none { padding:50px 10px; text-align:center; color:#888; }
+.brex-post-gallery-side .post-row { float:left; overflow:hidden; }
+.brex-post-gallery-side .post-list { overflow:hidden; }
+.brex-post-gallery-side .post-image { position:relative; overflow:hidden; }
+.brex-post-gallery-side .post-content { padding-top:10px; margin:-2px 0px; overflow:hidden; }
+.brex-post-gallery-side .post-subject { overflow:hidden; letter-spacing:-1px; padding-right:1px; }
+.brex-post-gallery-side .post-sp { color:#ccc; margin:0px 4px; }
+.brex-post-gallery-side .post-text { font-size:12px; color:#888; margin-top:4px; }
+.is-pc .ko .brex-post-gallery-side .post-ko { font-size:11px; }

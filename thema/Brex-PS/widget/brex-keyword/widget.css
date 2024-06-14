@@ -1,0 +1,5 @@
+@charset "utf-8";
+
+.brex-keyword { line-height:19px; height:25px; overflow:hidden; text-align:left; }
+.brex-keyword .stx { display:inline-block; background:#333; border-radius:5px; padding:3px 7px; font-size:13px; letter-spacing:-1px; margin:0 2px; }
+.brex-keyword .stx a { color:#fff; }

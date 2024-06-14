@@ -1,0 +1,19 @@
+@charset "utf-8";
+
+.brex-post-add { overflow:hidden; line-height:20px; }
+.brex-post-add .txt-normal { letter-spacing:0; }
+.brex-post-add .txt-short { letter-spacing:-1px; padding-right:1px; }
+.brex-post-add .post-vicon { position:absolute; left:6px; top:6px; color: #fff; font-size:20px; z-index:1; text-shadow: 1px 1px 1px #000; }
+.brex-post-add .post-none { padding:50px 10px; text-align:center; color:#888; }
+.brex-post-add .post-row { float:left; overflow:hidden; }
+.brex-post-add .post-list { overflow:hidden; }
+.brex-post-add .post-image { position:relative; overflow:hidden; }
+.brex-post-add .post-content { background:#fafafa; padding:10px; margin:-2px 0px; overflow:hidden; }
+.brex-post-add .post-subject { letter-spacing:-1px; }
+.brex-post-add .post-sp { color:#ccc; margin:0px 4px; }
+.brex-post-add .post-text { height:50px; font-size:12px; color:#888; padding-top:22px; }
+.is-pc .ko .brex-post-add .post-ko { font-size:11px; }
+.brex-post-add .over-black { position:absolute; z-index:1; background:url('./over-black.png'); width:100%; height:100%; background-size:cover; top:0; left:0; }
+.brex-post-add .over-black .over-text { text-align:center; padding-top:35%; }
+.brex-post-add .over-black .over-text a { color:#fff; }
+.brex-post-add .rfs-div { cursor:pointer; z-index:2; position:absolute; top:10px; right:10px; color:#fff; background:rgba(0, 0, 0, 0.5); width:21px; height:21px; line-height:21px; text-align:center; padding:0px; border-radius:10px; }

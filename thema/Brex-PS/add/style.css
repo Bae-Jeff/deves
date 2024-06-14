@@ -1,0 +1,10 @@
+
+.response-media.media, .response-media.media .media { margin-top:0px !important; }
+.response-media { position:relative; border-bottom:1px solid #ebebeb; padding:5px 10px; padding-top:3px; }
+div.response-media:last-child { border-bottom:0px; }
+.response-media .media-info { color:#888; }
+.response-media i.fa-circle { color:#00c43b; font-size:5px; }
+.response-media .media-body { padding-top: 2px; padding-left:10px; }
+.response-media .media-body a:hover { text-decoration:underline; }
+.response-media .del-list a { position:absolute; top:16px; right:10px; color:#888; }
+#add-response-list p { text-align:center; padding-top:80px; }

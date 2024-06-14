@@ -1,0 +1,22 @@
+@charset "utf-8";
+
+.brex-outlogin { position:relative; height:120px; border:1px solid #ddd; background:#fff; }
+.brex-outlogin label { line-height:12px; font-weight: normal; cursor: pointer; }
+.brex-outlogin .profile .photo { margin-right:12px; }
+.brex-outlogin .profile .photo img { width:60px; height:60px; border-radius: 50%; border:0; }
+.brex-outlogin .profile h3 { font-size:18px; line-height:32px; padding:0px; margin:0px; letter-spacing:-1px; display:block; text-overflow:ellipsis; white-space:nowrap; word-wrap:normal; overflow:hidden; }
+.brex-outlogin .login-line { position:absolute; bottom:0; right:0; width:100%; margin:0px; padding:0px; }
+.brex-outlogin .login-line #alarm:hover { cursor:pointer; }
+.brex-outlogin .login-line div.login-menu { padding:5px; border:1px solid #eee; border-bottom-color:#ddd; background:#fafafa; float:left; width:25%; border-left:0px; }
+.brex-outlogin .login-line div.active { background:#fff; border-bottom-color:#fff; border-top-color:#ddd; border-right-color:#ddd; }
+.brex-outlogin .form-group { margin-bottom:0px; }
+.brex-outlogin input[type="text"] { border-right:0px; border-bottom:0px; border-color:#ddd; outline:none; box-shadow:none; background:#f9fafc; height:35px; }
+.brex-outlogin input[type="password"] { border-right:0px; border-color:#ddd; outline:none; box-shadow:none; background:#f9fafc; height:35px; }
+
+.alarm-icon { position:absolute; top:-7px; left:50%; margin-left:-10px; background:#333333 !important; text-align:center; padding:0px !important; border:0px !important; line-height:14px; width:20px; height:14px; font-size:10px !important; color:#fff; }
+.alarm-icon-tri { position:absolute; top:14px; left:7px; display:inline-block; width:0; height:0; padding:0px !important; border-style:solid; border-width:3px; }
+.alarm-icon-tri.tri { border-color:#333333 transparent transparent transparent; }
+
+.memo-icon { position:absolute; top:-7px; left:50%; margin-left:-10px; background:red !important; text-align:center; padding:0px !important; border:0px !important; line-height:14px; width:20px; height:14px; font-size:10px !important; color:#fff; }
+.memo-icon-tri { position:absolute; top:14px; left:7px; display:inline-block; width:0; height:0; padding:0px !important; border-style:solid; border-width:3px; }
+.memo-icon-tri.tri { border-color:red transparent transparent transparent; }
