@@ -130,7 +130,7 @@ if(!empty($_POST['order_extends_days']) && $_POST['order_extends_days'] == 'subm
 </style>
 <script>
 function addItemOrderExtend(od_id,it_id){
-	console.log(od_id);
+	console.log(od_id,it_id);
 	$('#orderExdedsDaysForm')[0].reset();
 	$('#orderExtendsModal').find('[name="od_id"]').val(od_id);
 	$('#orderExtendsModal').find('[name="it_id"]').val(it_id);
@@ -394,7 +394,7 @@ function submitAddItemOrderExtend(){
                 <td class="td_sendcost_by"><?php echo $ct_send_cost; ?></td>
                 <td class="td_mng"><?php echo get_yn($opt['ct_point_use']); ?></td>
                 <td class="td_mng"><?php echo get_yn($opt['ct_stock_use']); ?></td>
-                <td><button type="button" class="btn_02 color_05 btn_table_column" onclick="addItemOrderExtend('<?php echo $od['od_id']?>','<?php echo $od['it_id']?>')">사용일 추가</button></td>
+                <td><button type="button" class="btn_02 color_05 btn_table_column" onclick="addItemOrderExtend('<?php echo $od['od_id']?>','<?php echo $row['it_id']?>')">사용일 추가</button></td>
             </tr>
             <?php 
             if($trExt !== ""){
