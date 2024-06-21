@@ -142,8 +142,13 @@ function submitAddItemOrderExtend(){
 	var it_id = $(extedsModal).find('[name="it_id"]').val();
 	var ext_type =  $(extedsModal).find('[name="order_exteds_days_type"]').val();
 	var add_days =  $(extedsModal).find('[name="order_exteds_add_days"]').val();
+	if(add_days == ""){
+		alert('추가/차감 일수를 입력해 주세요.');
+		return false;
+	}else{
+		$('#orderExdedsDaysForm')[0].submit();
+	}
 	
-	$('#orderExdedsDaysForm')[0].submit();
 }
 </script>
 <div class="modal" id="orderExtendsModal">
