@@ -102,8 +102,71 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
 
 // 파트너
 $is_use_partner = (defined('USE_PARTNER') && USE_PARTNER) ? true : false;
-?>
 
+
+if(!empty($_POST['order_extends_days']) && $_POST['order_extends_days'] == 'submit'){
+    dump($_POST);
+    exit;
+}
+?>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+<style>
+    .modal{
+        overflow: visible !important;
+    }
+    .modal-content .modal-form-row {
+        margin: 10px 0px;
+    }
+    .modal-content input, .modal-content select {
+        width: 100%;
+        display: block;
+    }
+    .btn_table_column{
+        padding: 4px 6px;
+        border: 0px;
+        border-radius: 3px;
+    }
+</style>
+<script>
+function addItemOrderExtend(od_id,it_id){
+	console.log(od_id);
+	$('#orderExdedsDaysForm')[0].reset();
+	$('#orderExtendsModal').find('[name="od_id"]').val(od_id);
+	$('#orderExtendsModal').find('[name="it_id"]').val(it_id);
+	$('#orderExtendsModal').modal();
+}
+function submitAddItemOrderExtend(){
+	var extedsModal =  $('#orderExtendsModal');
+	var od_id = $(extedsModal).find('[name="od_id"]').val();
+	var it_id = $(extedsModal).find('[name="it_id"]').val();
+	var ext_type =  $(extedsModal).find('[name="order_exteds_days_type"]').val();
+	var add_days =  $(extedsModal).find('[name="order_exteds_add_days"]').val();
+	
+	$('#orderExdedsDaysForm')[0].submit();
+}
+</script>
+<div class="modal" id="orderExtendsModal">
+	<form action="orderform.php" id="orderExdedsDaysForm" method="POST">
+        <div class="modal-content">
+        	<input type="hidden" name="order_extends_days" value="submit">
+        	<input type="hidden" name="od_id">
+        	<input type="hidden" name="it_id">
+            <div class="modal-form-row">
+            	<select name="order_exteds_days_type">
+            		<option value="plus"> + 추가</option>
+            		<option value="minus"> - 차감</option>
+            	</select>
+            </div>
+            <div class="modal-form-row">
+                <input class="frm_input" type="number" name="order_exteds_add_days" placeholder="4(일)">
+            </div>
+        </div>
+        <div class="modal-footer">
+        	<button class="btn_submit btn" type="button" onclick="submitAddItemOrderExtend()" style="width:100%">적용</button>
+        </div>
+    </form>
+</div>
 <section id="anc_sodr_list">
     <h2 class="h2_frm">주문상품 목록</h2>
     <?php echo $pg_anchor; ?>
@@ -159,6 +222,7 @@ $is_use_partner = (defined('USE_PARTNER') && USE_PARTNER) ? true : false;
             <th scope="col">배송비</th>
             <th scope="col">포인트반영</th>
             <th scope="col">재고반영</th>
+            <th scope="col">CTRL</th>
         </tr>
         </thead>
         <tbody>
@@ -325,6 +389,7 @@ $is_use_partner = (defined('USE_PARTNER') && USE_PARTNER) ? true : false;
                 <td class="td_sendcost_by"><?php echo $ct_send_cost; ?></td>
                 <td class="td_mng"><?php echo get_yn($opt['ct_point_use']); ?></td>
                 <td class="td_mng"><?php echo get_yn($opt['ct_stock_use']); ?></td>
+                <td><button type="button" class="btn_02 color_05 btn_table_column" onclick="addItemOrderExtend('<?php echo $od['od_id']?>','<?php echo $od['it_id']?>')">사용일 추가</button></td>
             </tr>
             <?php 
             if($trExt !== ""){
@@ -336,7 +401,7 @@ $is_use_partner = (defined('USE_PARTNER') && USE_PARTNER) ? true : false;
             	<td><?php echo $itemVers['item_buy_count']?></td>
             	<td colspan="3">다운로드 일수</dt>
             	<td><?php echo $itemVers['item_download_days']?></td>
-            	<td colspan="3">사용 일수</td>
+            	<td colspan="4">사용 일수</td>
             	<td><?php echo $itemVers['item_use_days']?></td>
             	
             </tr>

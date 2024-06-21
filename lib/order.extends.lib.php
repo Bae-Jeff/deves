@@ -56,6 +56,7 @@ function addOrderExtends($params){
                 order_use_days = ".$order_use_days.",
                 order_download_days = ".$order_download_days.",
                 order_extends_status = '".$order_extends_status."',
+                order_extends_memo = '".$order_extends_memo."',
                 updated_date = '".date('Y-m-d H:i:s')."',
                 create_user = '".$member['mb_id']."'
             WHERE
@@ -70,6 +71,7 @@ function addOrderExtends($params){
                 order_use_days,
                 order_download_days,
                 order_extends_status,
+                order_extends_memo,
                 created_date,
                 create_user
             )
@@ -79,6 +81,7 @@ function addOrderExtends($params){
                 ".$order_use_days.",
                 ".$order_download_days.",
                 '".$order_extends_status."',
+                '".$order_extends_memo."',
                 '".date('Y-m-d H:i:s')."',
                 '".$member['mb_id']."'
             )
@@ -97,12 +100,13 @@ CREATE TABLE `shop_order_extend` (
   `order_item_id` int(11) DEFAULT NULL COMMENT '주문상품번호',
   `order_download_days` int(11) DEFAULT NULL COMMENT '주문발생 다운로드 일수',
   `order_use_days` int(11) DEFAULT NULL COMMENT '주문발생 사용 일수',
-  `order_extends_status` varchar(50) DEFAULT NULL COMMENT '주문추가정보 상태',
+  `order_extends_status` varchar(1) DEFAULT NULL COMMENT '주문추가정보 상태',
+  `order_extends_memo` varchar(255) DEFAULT NULL COMMENT '주문추가정보 메모',
   `create_user` varchar(50) DEFAULT NULL COMMENT '생성인',
   `created_date` datetime DEFAULT NULL COMMENT '생성일',
   `updated_date` datetime DEFAULT NULL COMMENT '수정일',
   `deleted_date` datetime DEFAULT NULL COMMENT '삭제일',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
  * */
