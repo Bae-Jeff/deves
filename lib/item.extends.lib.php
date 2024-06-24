@@ -208,11 +208,45 @@ function setItemVersionConfig($params) {
 }
 function deleteItemVersionConfig($m) {
 }
-function getItemUseStatus($m) {
+function getItemUseStatus($params) {
+    global $db;
+    $return = array(
+        "remainDays" => 0,
+        "endDate" => '0000-00-00',
+        "orderHistory" => [],
+    );
+    if(!empty($params['it_id'])){
+        $orders = $db->select(['*'])
+        ->from('shop_order_extend')
+        ->where(['order_item_id' => $params["it_id"]])
+        ->get();
+        $totalDays = 0;
+        $startDate =  '';
+        foreach ($orders as $oKey => $oRow){
+            if($oKey == 0){
+                $startDate = $oRow['created_date'];
+            }
+            $totalDays += $oRow['order_use_days']; 
+        }
+        $return['data'] = $orders;
+        $return['endDate'] =  getUseEndDate($startDate,$totalDays);
+        $return['remainDays'] = getGapDays(date('Y-m-d'),$return['endDate']);
+        
+    }
+    return $return;
 }
-function setItemUseStatus($m) {
+function getUseEndDate($date, $days) {
+    $dateTime = new DateTime($date);
+    $interval = new DateInterval('P' . $days . 'D'); // P stands for Period, D stands for Day
+    $dateTime->add($interval);
+    return $dateTime->format('Y-m-d');
 }
-
+function getGapDays($date1, $date2) {
+    $dateTime1 = new DateTime($date1);
+    $dateTime2 = new DateTime($date2);
+    $interval = $dateTime1->diff($dateTime2);
+    return $interval->days;
+}
 
 /*
 -- deves.shop_item_extend definition

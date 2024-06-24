@@ -105,9 +105,26 @@ $is_use_partner = (defined('USE_PARTNER') && USE_PARTNER) ? true : false;
 
 
 if(!empty($_POST['order_extends_days']) && $_POST['order_extends_days'] == 'submit'){
-    dump($_POST);
-    exit;
+    
+    
+    #################################### extends
+    $itemVersion = getItemVersionConfig($_POST['it_id']);
+//     $addDays =  $_POST['order_exteds_days_type'] == 'plus'? $_POST['order_extends_days']: -$_POST['order_extends_days'];
+    $params = array(
+        "hardInsert" => true,
+        "order_item_id" => $_POST['it_id'],
+        "order_parent" => $od_id,
+        "order_use_days" => $_POST['order_exteds_add_days']??0,
+        "order_download_days" => 0,
+        "order_extends_memo" => $_POST['order_exteds_add_memo']??"",
+        "order_extends_status" => "S",
+        "create_user" => $mb_id
+    );
+    $rsAdd = addOrderExtends($params);
+    ####################################
+    
 }
+
 ?>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
@@ -140,7 +157,7 @@ function submitAddItemOrderExtend(){
 	var extedsModal =  $('#orderExtendsModal');
 	var od_id = $(extedsModal).find('[name="od_id"]').val();
 	var it_id = $(extedsModal).find('[name="it_id"]').val();
-	var ext_type =  $(extedsModal).find('[name="order_exteds_days_type"]').val();
+// 	var ext_type =  $(extedsModal).find('[name="order_exteds_days_type"]').val();
 	var add_days =  $(extedsModal).find('[name="order_exteds_add_days"]').val();
 	if(add_days == ""){
 		alert('추가/차감 일수를 입력해 주세요.');
@@ -157,14 +174,17 @@ function submitAddItemOrderExtend(){
         	<input type="hidden" name="order_extends_days" value="submit">
         	<input type="hidden" name="od_id">
         	<input type="hidden" name="it_id">
+<!--             <div class="modal-form-row"> -->
+<!--             	<select name="order_exteds_days_type"> -->
+<!--             		<option value="plus"> + 추가</option> -->
+<!--             		<option value="minus"> - 차감</option> -->
+<!--             	</select> -->
+<!--             </div> -->
             <div class="modal-form-row">
-            	<select name="order_exteds_days_type">
-            		<option value="plus"> + 추가</option>
-            		<option value="minus"> - 차감</option>
-            	</select>
+                <input class="frm_input" type="text" name="order_exteds_add_memo" value="임의 가감" placeholder="">
             </div>
             <div class="modal-form-row">
-                <input class="frm_input" type="number" name="order_exteds_add_days" placeholder="4(일)">
+                <input class="frm_input" type="number" name="order_exteds_add_days" value="0" placeholder="n(일)">
             </div>
         </div>
         <div class="modal-footer">
@@ -237,6 +257,7 @@ function submitAddItemOrderExtend(){
 		$chk_cnt = 0;
         for($i=0; $row=sql_fetch_array($result); $i++) {
 
+             
 			// 파트너에게 이메일 보내기 체크
 			if($is_use_partner && $row['pt_id']) {
 				$pt_email[] = $row['pt_id'];
@@ -394,7 +415,13 @@ function submitAddItemOrderExtend(){
                 <td class="td_sendcost_by"><?php echo $ct_send_cost; ?></td>
                 <td class="td_mng"><?php echo get_yn($opt['ct_point_use']); ?></td>
                 <td class="td_mng"><?php echo get_yn($opt['ct_stock_use']); ?></td>
-                <td><button type="button" class="btn_02 color_05 btn_table_column" onclick="addItemOrderExtend('<?php echo $od['od_id']?>','<?php echo $row['it_id']?>')">사용일 추가</button></td>
+                <td>
+                <?php 
+                err();
+                $itemStatus = getItemUseStatus(array('it_id' => $row['it_id']));
+                dump($itemStatus);
+                ?>
+                <button type="button" class="btn_02 color_05 btn_table_column" onclick="addItemOrderExtend('<?php echo $od['od_id']?>','<?php echo $row['it_id']?>')">사용일 추가</button></td>
             </tr>
             <?php 
             if($trExt !== ""){

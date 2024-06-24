@@ -3,12 +3,16 @@ if (!defined('_GNUBOARD_')) exit;
 
 function mapOrderExtends(){
     return array(
+        'hardInsert',
+        'order_parent',
         'order_id',
         'order_detail_id',
         'order_item_id',
         'order_use_days',
         'order_download_days',
-        'order_extends_status'
+        'order_extends_memo',
+        'order_extends_status',
+        'user_id'
     );
 }
 // UTF8 Encode ------------------------------------------------------------------------
@@ -34,19 +38,21 @@ function confirmOrderExtend($order_id, $order_status, $status = 'C'){
         return sql_query($sqlUpdate);
     }
 }
+
 function addOrderExtends($params){
     global $config, $g5, $default,$member;
     
     foreach (mapOrderExtends() as $pKey => $culumn){
         $$culumn = $params[$culumn] ?? null;
     };
-    
+    $order_extends_memo = $order_extends_memo ?? '';
     $existSql = "SELECT * FROM shop_order_extend 
                 WHERE order_id = '".$order_id."' 
                 AND order_item_id = '".$order_item_id."'";
     $rsExist = sql_query($existSql);
     $order_detail_id = null;
-    if ($rsExist && mysqli_num_rows($rsExist) > 0) { // 결과값이 있는 경우
+   
+    if ($rsExist && mysqli_num_rows($rsExist) > 0 && empty($hardInsert)) { // 결과값이 있는 경우
         $arrExist = mysqli_fetch_assoc($rsExist);
        echo  $updateSql = "
             UPDATE shop_order_extend
@@ -95,6 +101,7 @@ function addOrderExtends($params){
  * 
 CREATE TABLE `shop_order_extend` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '순번',
+  `order_parent` bigint(20) DEFAULT NULL COMMENT '소속',
   `order_id` bigint(20) unsigned NOT NULL COMMENT '주문번호',
   `order_detail_id` int(11) DEFAULT NULL COMMENT '주문상세번호',
   `order_item_id` int(11) DEFAULT NULL COMMENT '주문상품번호',

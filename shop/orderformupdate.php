@@ -583,7 +583,11 @@ foreach ($_POST['it_id'] as $iKey => $itemId){
         "create_user" => $mb_id
     );
     
-    addOrderExtends($params);
+    if(addOrderExtends($params)){
+        echo '<script> alert("추가완료"); location.reload();</script>';
+    }else{
+        echo '<script> alert("추가실패\n관리자에게 문의주세요."); location.reload();</script>';
+    }
     
     
 }
