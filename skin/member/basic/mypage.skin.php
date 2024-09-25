@@ -236,7 +236,7 @@ if($header_skin)
         				</tr>
     				</thead>
     			    <tbody>
-    			    <?php
+    			    <?php/*
                     dump(getUuid());
     			    if(count($orderdItems) > 0){
 //     			        dump($db);
@@ -295,6 +295,7 @@ if($header_skin)
 					
 					<?php 
     			    }
+*/
 					?>
 				    </tbody>
 			    </table>

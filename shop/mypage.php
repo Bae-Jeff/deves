@@ -58,18 +58,18 @@ $setup_href = '';
 if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
 	$setup_href = './skin.setup.php?skin=member&amp;ts='.urlencode(THEMA);
 }
-
-$orderItems =  'SELECT * from shop_order_extend soe
-join g5_shop_order gso on gso.od_id  = soe.order_id
-group by soe.order_item_id, soe.order_option_etc';
-$orderdItems = $db->query($orderItems);
-err();
-foreach($orderdItems as $oKey => $oRow){
-    $orderdItems[$oKey]['item'] = $db->select(['*'])
-    ->from('g5_shop_item')
-    ->where(['it_id' => $oRow['order_item_id']])
-    ->getOne();
-}
+$orderItems = [];
+//$orderItems =  'SELECT * from shop_order_extend soe
+//join g5_shop_order gso on gso.od_id  = soe.order_id
+//group by soe.order_item_id, soe.order_option_etc';
+//$orderdItems = $db->query($orderItems);
+//err();
+//foreach($orderdItems as $oKey => $oRow){
+//    $orderdItems[$oKey]['item'] = $db->select(['*'])
+//    ->from('g5_shop_item')
+//    ->where(['it_id' => $oRow['order_item_id']])
+//    ->getOne();
+//}
 
 include_once($skin_path.'/mypage.skin.php');
 
