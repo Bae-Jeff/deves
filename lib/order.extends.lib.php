@@ -51,7 +51,7 @@ function checkRootIsAlive($params){
     ->from('shop_order_extend')
     ->where([
         'order_item_id' => $itemId,
-        'order_order_etc' => $optionEtc,
+        'order_option_etc' => $optionEtc,
         'order_extends_memo' => 'ROOT',
         'order_extends_status' => 'A',
         'user_id' => $userId
