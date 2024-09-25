@@ -840,9 +840,13 @@ $html_process = new html_process();
 
 
 ################################ extends
-include_once(G5_LIB_PATH.'/db.extends.lib.php');
-include_once(G5_LIB_PATH.'/item.extends.lib.php');
-include_once(G5_LIB_PATH.'/order.extends.lib.php');
-$db = new DB(G5_MYSQL_HOST, G5_MYSQL_USER, G5_MYSQL_PASSWORD, G5_MYSQL_DB);
+include_once(G5_LIB_PATH.'/ExtShop/ExtDB.php');
+include_once(G5_LIB_PATH.'/ExtShop/ExtShopItem.php');
+include_once(G5_LIB_PATH.'/ExtShop/ExtShopItemLog.php');
+include_once(G5_LIB_PATH.'/ExtShop/ExtShopItemOrder.php');
+$extDb = new DB(G5_MYSQL_HOST, G5_MYSQL_USER, G5_MYSQL_PASSWORD, G5_MYSQL_DB);
+$extItem = new ExtShopItem($extDb);
+$extItemLog = new ExtShopItemLog($extDb);
+$extItemOrder = new ExtShopItemOrder($extDb);
 ################################ 
 ?>
