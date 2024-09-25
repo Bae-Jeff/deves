@@ -93,7 +93,7 @@ function addOrderExtends($params){
             'order_extends_status' => 'A',
             'user_id' => $user_id,
             'created_date' => date('Y-m-d H:i:s'),
-            'created_user' => $member['mb_id']
+            'create_user' => $member['mb_id']
         ]);
     }
     
