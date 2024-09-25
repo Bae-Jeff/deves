@@ -71,7 +71,7 @@ function checkRootIsAlive($params){
 
 
 function addOrderExtends($params){
-    global $config, $g5, $default,$member;
+    global $config, $g5, $default,$member,$db;
     
     foreach (mapOrderExtends() as $pKey => $culumn){
         $$culumn = $params[$culumn] ?? null;
