@@ -8,7 +8,24 @@ if($header_skin)
 	include_once('./header.php');
 
 ?>
-
+<style>
+.item-name, .item-option {
+    text-align: left;
+}
+.item-name {
+    font-weight: bold;   
+}
+.item-option i {
+    font-family: initial;
+    text-decoration: none;
+    margin: 0 3px;
+}
+.item-option span {
+    background: #efefef;
+    padding: 1px 6px;
+    border-radius: 2px;
+}
+</style>
 <div class="mypage-skin">
 	<div class="panel panel-default view-author">
 		<div class="panel-heading">
@@ -200,7 +217,92 @@ if($header_skin)
 	</div>
 
 	<?php if(IS_YC) { // 영카트 ?>
+	<?php 
+// 	err();
+// 	dump($orderdItems);
+	?>
 		<br>
+		<section>
+			<h4>나의 주문상품</h4>
+				<div class="table-responsive">
+				<table class="table mypage-tbl">			
+					<thead>
+        				<tr>
+        					<th scope="col">상품코드</th>
+        					<th scope="col">옵션정보</th>
+        					<th scope="col">상태</th>
+        					<th scope="col">주문내역</th>
+        					<th scope="col">만료기간</th>
+        				</tr>
+    				</thead>
+    			    <tbody>
+    			    <?php
+                    dump(getUuid());
+    			    if(count($orderdItems) > 0){
+//     			        dump($db);
+//     			        dump($orderdItems);  
+    			        foreach($orderdItems as $exKey => $exRow){
+    			            err();
+    			            $exDateStatus = getItemUseStatus($exRow);
+    			            dump($exDateStatus);
+//     			            dump(getItemUseState($exRow));
+//     			            $exRow['status'] = getItemUseStatus($exRow);
+    			    ?>
+    					<tr>
+    						<td>
+    							<a href="../shop/item.php?it_id=<?=$exRow['order_item_id']?>"><?=$exRow['order_item_id']?></a>
+    						</td>
+    						<td>
+    							<p class="item-name"><?=$exRow['item']['it_name']?></p>
+    							<?php 
+    							if(!empty($exRow['order_option_etc'])){
+    							?>
+    							<p class="item-option">┕ <span><?=str_replace('',' </span><i>›</i><span> ',str_replace('|',' : ',$exRow['order_option_etc']))?></span></p>
+    							<?php 
+    							}
+    							?>
+    						</td>
+    						<?php 
+    						if($exRow['order_extends_status']== "R" && $exDateStatus['remainDays'] > 0){
+    						    $strExStatus = '사용중';
+    						}else if($exRow['order_extends_status']== "S" && $exDateStatus['remainDays'] > 0){
+    						    $strExStatus = '정지';
+    						}else{
+    						    $strExStatus = '대기';
+    						}
+    						
+    						?>
+    						<td><?=$strExStatus?></td>
+    						<td><button onclick="showOrderDetail('<?=$exRow['order_option_etc']?>')">상세내역</button></td>
+    						<td>
+    							<?=!empty($exDateStatus['endDate'])?'<span class="end-date">'.$exDateStatus['endDate'].'</span>':''?>
+    							<?=isset($exDateStatus['remainDays'])?'<span class="remain-days">( '.$exDateStatus['remainDays'].' )</span>':''?>
+    						</td>
+    					</tr>
+    					<tr data="<?=$exRow['order_option_etc']?>" class="hidden">
+    						<td colspan="5" class="order-detail">
+    							<?php 
+    							foreach($exDateStatus['orderHistory'] as $oKey => $oRow){
+    							    
+    							}
+    							?>
+    						</td>
+    					</tr>
+					<?php 
+    			        }
+    			    }else{
+					?>
+					
+					<?php 
+    			    }
+					?>
+				    </tbody>
+			    </table>
+			</div>
+			<p class="text-right">
+<!-- 				<a href="./orderinquiry.php"><i class="fa fa-arrow-right"></i> 주뭄상품 더보기</a> -->
+			</p>
+		</section>
 		<!-- 최근 주문내역 시작 { -->
 		<section>
 			<h4>최근 주문내역</h4>

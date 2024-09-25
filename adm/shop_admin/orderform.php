@@ -103,7 +103,6 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
 // 파트너
 $is_use_partner = (defined('USE_PARTNER') && USE_PARTNER) ? true : false;
 
-
 if(!empty($_POST['order_extends_days']) && $_POST['order_extends_days'] == 'submit'){
     
     
@@ -113,16 +112,24 @@ if(!empty($_POST['order_extends_days']) && $_POST['order_extends_days'] == 'subm
     $params = array(
         "hardInsert" => true,
         "order_item_id" => $_POST['it_id'],
-        "order_parent" => $od_id,
+        "order_parent" => $_POST['od_parent'],
         "order_use_days" => $_POST['order_exteds_add_days']??0,
         "order_download_days" => 0,
         "order_extends_memo" => $_POST['order_exteds_add_memo']??"",
         "order_extends_status" => "S",
+        "user_id" => $_POST['user_id'],
         "create_user" => $mb_id
     );
     $rsAdd = addOrderExtends($params);
-    ####################################
+
+    if($rsAdd){
+        echo '<script> alert("추가완료"); location.href = "'.$_SERVER['REQUEST_URI'].'";</script>';
+    }else{
+        echo '<script> alert("추가실패\n관리자에게 문의주세요."); location.href = "'.$_SERVER['REQUEST_URI'].'";</script>';
+    }
     
+    ####################################
+    exit;
 }
 
 ?>
@@ -146,17 +153,19 @@ if(!empty($_POST['order_extends_days']) && $_POST['order_extends_days'] == 'subm
     }
 </style>
 <script>
-function addItemOrderExtend(od_id,it_id){
+function addItemOrderExtend(od_id,it_id,user_id){
 	console.log(od_id,it_id);
 	$('#orderExdedsDaysForm')[0].reset();
-	$('#orderExtendsModal').find('[name="od_id"]').val(od_id);
+	$('#orderExtendsModal').find('[name="od_parent"]').val(od_id);
 	$('#orderExtendsModal').find('[name="it_id"]').val(it_id);
+	$('#orderExtendsModal').find('[name="user_id"]').val(user_id);
 	$('#orderExtendsModal').modal();
 }
 function submitAddItemOrderExtend(){
 	var extedsModal =  $('#orderExtendsModal');
-	var od_id = $(extedsModal).find('[name="od_id"]').val();
+	var od_parent = $(extedsModal).find('[name="od_parent"]').val();
 	var it_id = $(extedsModal).find('[name="it_id"]').val();
+	var user_id = $(extedsModal).find('[name="user_id"]').val();
 // 	var ext_type =  $(extedsModal).find('[name="order_exteds_days_type"]').val();
 	var add_days =  $(extedsModal).find('[name="order_exteds_add_days"]').val();
 	if(add_days == ""){
@@ -169,11 +178,13 @@ function submitAddItemOrderExtend(){
 }
 </script>
 <div class="modal" id="orderExtendsModal">
-	<form action="orderform.php" id="orderExdedsDaysForm" method="POST">
+	<form action="<?=$_SERVER['REQUEST_URI']?>" id="orderExdedsDaysForm" method="POST">
         <div class="modal-content">
         	<input type="hidden" name="order_extends_days" value="submit">
-        	<input type="hidden" name="od_id">
+        	<input type="hidden" name="od_parent">
         	<input type="hidden" name="it_id">
+        	<input type="hidden" name="user_id">
+        	
 <!--             <div class="modal-form-row"> -->
 <!--             	<select name="order_exteds_days_type"> -->
 <!--             		<option value="plus"> + 추가</option> -->
@@ -274,8 +285,8 @@ function submitAddItemOrderExtend(){
                         order by io_type asc, ct_id asc ";
             $res = sql_query($sql);
 
-            $rowspan = sql_num_rows($res);
 
+            $rowspan = sql_num_rows($res);
             // 합계금액 계산
             $sql = " select SUM(IF(io_type = 1, (io_price * ct_qty), ((ct_price + io_price) * ct_qty))) as price,
                             SUM(ct_qty) as qty
@@ -417,11 +428,11 @@ function submitAddItemOrderExtend(){
                 <td class="td_mng"><?php echo get_yn($opt['ct_stock_use']); ?></td>
                 <td>
                 <?php 
-                err();
-                $itemStatus = getItemUseStatus(array('it_id' => $row['it_id']));
-                dump($itemStatus);
+//                 err();
+//                 $itemStatus = getItemUseStatus(array('it_id' => $row['it_id']));
+//                 dump($row);
                 ?>
-                <button type="button" class="btn_02 color_05 btn_table_column" onclick="addItemOrderExtend('<?php echo $od['od_id']?>','<?php echo $row['it_id']?>')">사용일 추가</button></td>
+                <button type="button" class="btn_02 color_05 btn_table_column" onclick="addItemOrderExtend('<?php echo $od['od_id']?>','<?php echo $row['it_id']?>','<?php echo $opt['mb_id']?>')">사용일 추가</button></td>
             </tr>
             <?php 
             if($trExt !== ""){

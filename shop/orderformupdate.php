@@ -2,6 +2,7 @@
 include_once('./_common.php');
 include_once(G5_LIB_PATH.'/mailer.lib.php');
 
+
 //이니시스 lpay 요청으로 왔다면 $default['de_pg_service'] 값을 이니시스로 변경합니다.
 if( $od_settle_case == 'lpay' ){
     $default['de_pg_service'] = 'inicis';
@@ -32,8 +33,15 @@ $sql = " select it_id,
           where od_id = '$tmp_cart_id'
             and ct_select = '1' ";
 $result = sql_query($sql);
+
+// it_option
+$itemOption =  '';
+$itemOptionSlash =  '';
+
 for ($i=0; $row=sql_fetch_array($result); $i++)
 {
+    $itemOption .= $itemOptionSlash.$row['io_id'];
+    $itemOptionSlash =  '|';
     // 상품에 대한 현재고수량
     if($row['io_id']) {
         $it_stock_qty = (int)get_option_stock_qty($row['it_id'], $row['io_id'], $row['io_type']);
@@ -44,7 +52,6 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
     if ($row['ct_qty'] > $it_stock_qty)
         $error .= "{$row['ct_option']} 의 재고수량이 부족합니다. 현재고수량 : $it_stock_qty 개\\n\\n";
 }
-
 if($i == 0)
     alert('장바구니가 비어 있습니다.\\n\\n이미 주문하셨거나 장바구니에 담긴 상품이 없는 경우입니다.', G5_SHOP_URL.'/cart.php');
 
@@ -575,23 +582,21 @@ err();
 foreach ($_POST['it_id'] as $iKey => $itemId){
     $itemVersion = getItemVersionConfig($itemId);
     $params = array(
-        "order_item_id" => $itemId,
+        "order_extends_memo" => "root",
+        "order_parent" => $od_id,
         "order_id" => $od_id,
+        "order_item_id" => $itemId,
+        "order_option_etc" => $itemOption??null,
         "order_use_days" => $itemVersion['item_use_days']??30,
         "order_download_days" => $itemVersion['item_download_days']??30,
-        "order_extends_status" => "R",
-        "create_user" => $mb_id
+        "order_extends_status" => "A", // Active Deleted 
+        "user_id" => $member['mb_id'],
+        "create_user" => $member['mb_id']
     );
     
-    if(addOrderExtends($params)){
-        echo '<script> alert("추가완료"); location.reload();</script>';
-    }else{
-        echo '<script> alert("추가실패\n관리자에게 문의주세요."); location.reload();</script>';
-    }
-    
-    
+    addOrderExtends($params);
 }
-
+ 
 ####################################
 
 // 주문정보 입력 오류시 결제 취소
