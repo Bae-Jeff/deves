@@ -26,7 +26,7 @@ class ExtShopItemLog {
             }
         }
     }
-    public function returnJson($data = null,$code = 200,$message = 'success'){
+    public function returnJson($data = [],$code = 200,$message = 'success'){
         echo json_encode([
             'code' => $code,
             'message' => $message,
@@ -36,14 +36,14 @@ class ExtShopItemLog {
     }
     public function getKeyLog($params){
         $this->params = $params;
-        $memberId = $params['member_id'];
-        $itemId = $params['item_id'];
-        $itemOption = $params['item_option'];
         $this->checkValidParams([
             'member_id',
             'item_id',
             'item_option'
         ]);
+        $memberId = $params['member_id'];
+        $itemId = $params['item_id'];
+        $itemOption = $params['item_option'];
         $activeLog = $this->db->select(['*'])
             ->where([
                     'member_id' => $memberId,
@@ -66,17 +66,18 @@ class ExtShopItemLog {
             if(!empty($pausedLog)) { // Paused Log 있으면
                 $activeLog  =  $pausedLog;
             }else{ // Active , Paused 두 Log 모두 없으면
-                $newActiveLog = [
+                $newLog = [
                     'uuid' => uniqid(),
                     'member_id' => $memberId,
                     'item_id' => $itemId,
                     'item_option' => $itemOption,
                     'log_status' => 'A',
-                    'create_date' => date('YmdHis'),
-                    'creater' => $_SESSION['mb_id']
+                    'start_date' => date('Y-m-d'),
+                    'creater' => $_SESSION['ss_mb_id'],
+                    'created_date' => date('Y-m-d H:i:s')
                 ];
-                $this->db->insert('ext_shop_item_log', $newActiveLog);
-                $activeLog = $newActiveLog;
+                $this->db->insert('ext_shop_item_log', $newLog);
+                $activeLog = $this->db->select(['*'])->where(['uuid' => $newLog['uuid']])->from('ext_shop_item_log')->getOne();
             }
         }
 

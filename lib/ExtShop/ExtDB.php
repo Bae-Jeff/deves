@@ -177,13 +177,15 @@ class DB
     {
         $fields = implode(', ', array_keys($data));
         $placeholders = implode(', ', array_fill(0, count($data), '?'));
-        $sql = "INSERT INTO $table ($fields) VALUES ($placeholders)";
 
-        $stmt = $this->prepare($sql);
+        $sql = "INSERT INTO $table ($fields) VALUES ($placeholders)";
         foreach ($data as $value) {
             $this->bindings[] = $value;
         }
-        return $stmt->execute();
+        $stmt = $this->prepare($sql);
+        $result = $stmt->execute();
+        $this->reset();
+        return $result;
     }
 
     public function update($table, $data, $conditions = [])
@@ -201,7 +203,9 @@ class DB
         }
 
         $stmt = $this->prepare($sql);
-        return $stmt->execute();
+        $result = $stmt->execute();
+        $this->reset();
+        return $result;
     }
 
     public function delete($table, $conditions = [])
@@ -214,7 +218,9 @@ class DB
         }
 
         $stmt = $this->prepare($sql);
-        return $stmt->execute();
+        $result = $stmt->execute();
+        $this->reset();
+        return $result;
     }
 
     public function paginate($page = 1, $perPage = 10)
@@ -272,7 +278,9 @@ class DB
             die("Failed to prepare statement: " . $this->connection->error);
         }
         $stmt->execute();
-        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $this->reset();
+        return $result;
     }
 
     public function close()

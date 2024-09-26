@@ -841,7 +841,7 @@ $html_process = new html_process();
 
 ################################ extends
 // 모든 오류, 경고, 공지사항을 표시합니다.
-error_reporting(E_ALL); // 모든 오류 보고
+error_reporting(E_ERROR); // 모든 오류 보고
 ini_set('display_errors', 1); // 오류를 화면에 표시
 
 // 선택적으로 로그 파일에 기록할 수도 있습니다.
