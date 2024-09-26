@@ -2,11 +2,87 @@
 
 class ExtShopItemLog {
     protected $db;
-
+    protected $params = [];
+    protected $attrs = [
+        'uuid',
+        'item_id',
+        'item_option',
+        'start_date',
+        'end_date',
+        'log_status',
+        'remain_download_days',
+        'remain_use_days',
+        'creater',
+        'created_date',
+        'updated_date'
+    ];
     public function __construct($db) {
         $this->db = $db;
     }
+    public function checkValidParams($requiredParams) {
+        foreach($requiredParams as $param) {
+            if(!isset($this->params[$param])) {
+                throw new Exception('Invalid params : '.$param);
+            }
+        }
+    }
+    public function returnJson($data = null,$code = 200,$message = 'success'){
+        echo json_encode([
+            'code' => $code,
+            'message' => $message,
+            'data' => $data
+        ],JSON_PRETTY_PRINT);
+        exit;
+    }
+    public function getKeyLog($params){
+        $this->params = $params;
+        $memberId = $params['member_id'];
+        $itemId = $params['item_id'];
+        $itemOption = $params['item_option'];
+        $this->checkValidParams([
+            'member_id',
+            'item_id',
+            'item_option'
+        ]);
+        $activeLog = $this->db->select(['*'])
+            ->where([
+                    'member_id' => $memberId,
+                    'item_id' => $itemId,
+                    'item_option' => $itemOption,
+                    'log_status' => 'A'
+                ])
+            ->from('ext_shop_item_log')
+            ->getOne();
+        if(empty($activeLog)) { // Active Log 없으면
+            $pausedLog = $this->db->select(['*'])
+                ->where([
+                    'member_id' => $memberId,
+                    'item_id' => $itemId,
+                    'item_option' => $itemOption,
+                    'log_status' => 'P'
+                ])
+                ->from('ext_shop_item_log')
+                ->getOne();
+            if(!empty($pausedLog)) { // Paused Log 있으면
+                $activeLog  =  $pausedLog;
+            }else{ // Active , Paused 두 Log 모두 없으면
+                $newActiveLog = [
+                    'uuid' => uniqid(),
+                    'member_id' => $memberId,
+                    'item_id' => $itemId,
+                    'item_option' => $itemOption,
+                    'log_status' => 'A',
+                    'create_date' => date('YmdHis'),
+                    'creater' => $_SESSION['mb_id']
+                ];
+                $this->db->insert('ext_shop_item_log', $newActiveLog);
+                $activeLog = $newActiveLog;
+            }
+        }
 
+        $this->returnJson($activeLog);
+
+    }
     public function create($data) {
         return $this->db->insert('ext_shop_item_log', $data);
     }
@@ -43,7 +119,7 @@ class ExtShopItemLog {
             // 관련된 주문을 가져옵니다.
             $orders = $this->db->select(['item_use_days', 'item_option_full'])
                 ->from('ext_shop_item_orders')
-                ->where(['member_id' => $memberId, 'item_option_full' => $log['item_options']])
+                ->where(['member_id' => $memberId, 'item_option_full' => $log['item_option']])
                 ->get();
 
             // 사용 가능한 일수의 합을 계산합니다.
@@ -70,7 +146,7 @@ class ExtShopItemLog {
                 $newLogData = [
                     'uuid' => $newLogUUid, // 새로운 UUID 생성
                     'item_id' => $log['item_id'], // 기존 로그의 item_id 사용
-                    'item_options' => $log['item_options'],
+                    'item_option' => $log['item_option'],
                     'member_id' => $memberId,
                     'start_date' => $today, // 오늘 날짜로 시작
                     'end_date' => null, // 종료일은 null로 설정

@@ -2,9 +2,10 @@
 
 class ExtShopItemOrder {
     protected $db;
-
+    protected $itemLog;
     public function __construct($db) {
         $this->db = $db;
+        $this->itemLog = new ExtShopItemLog($db);
     }
 
     public function insertOrUpdate($orderData) {
@@ -18,7 +19,8 @@ class ExtShopItemOrder {
             ->from('ext_shop_item_log')
             ->where([
                 'member_id' => $memberId,
-                'log_status' => 'Active'
+                'log_status' => 'A',
+                'item_options' => $itemOption
             ])
             ->get();
 
@@ -30,7 +32,7 @@ class ExtShopItemOrder {
                 'item_options' => $orderData['item_option_full'], // 필요한 옵션
                 'member_id' => $memberId,
                 'start_date' => date('Ymd'), // 오늘 날짜로 설정
-                'log_status' => 'Active',
+                'log_status' => 'A',
                 'remain_download_days' => null, // 필요에 따라 설정
                 'remain_use_days' => $itemUseDays, // 초기 남은 사용 일수 설정
                 'creater' => 'admin' // 예시: 생성자
@@ -42,7 +44,7 @@ class ExtShopItemOrder {
                 ->from('ext_shop_item_log')
                 ->where([
                     'member_id' => $memberId,
-                    'log_status' => 'Paused'
+                    'log_status' => 'P'
                 ])
                 ->get();
 
