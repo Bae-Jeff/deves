@@ -13,6 +13,7 @@ class ExtShopItemLog {
         'log_status',
         'remain_download_days',
         'remain_use_days',
+        'change_log',
         'creater',
         'created_date',
         'updated_date'
@@ -189,6 +190,7 @@ class ExtShopItemLog {
   `log_status` varchar(1) DEFAULT NULL COMMENT '로그 상태 (Active, End, Paused)',
   `remain_download_days` int(11) DEFAULT NULL COMMENT '남은 다운로드 일수',
   `remain_use_days` int(11) DEFAULT NULL COMMENT '남은 사용 일수',
+  `change_log` text DEFAULT NULL COMMENT '수정일지',
   `creater` varchar(50) DEFAULT NULL COMMENT '생성인',
   `created_date` datetime DEFAULT NULL COMMENT '생성일',
   `updated_date` datetime DEFAULT NULL COMMENT '수정일',

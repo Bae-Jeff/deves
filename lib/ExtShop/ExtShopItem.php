@@ -21,11 +21,12 @@ class ExtShopItem {
         ],JSON_PRETTY_PRINT);
         exit;
     }
-    public function getItemVersion($itemId){
+    public function getItemVersion($params){
         return $this->db->select(['*'])
             ->from('ext_shop_item')
             ->where([
-                'item_id' => $itemId,
+                'item_target' => $params['item_target'],
+                'item_id' => $params['item_id'],
                 'extend_type'=> 'I'
             ])
             ->getOne();
@@ -52,7 +53,7 @@ class ExtShopItem {
                 'item_buy_count' => 0,
                 'item_download_days' => 30,
                 'item_use_days' => 30,
-                'item_extend_status' => 'Y',
+                'item_ext_status' => 'Y',
                 'create_user' => $params['create_user']
             ]);
         }
@@ -75,7 +76,7 @@ class ExtShopItem {
             ->from('ext_shop_item')
             ->where([
                 'item_link_key' => $itemLinkKey,
-                'item_extend_status' => 'Y'
+                'item_ext_status' => 'Y'
             ])
             ->getOne();
         if($this->isApi){
@@ -85,7 +86,9 @@ class ExtShopItem {
         }
     }
     public function deleteItemLink($params){
-        $rsDelete = $this->db->delete('ext_shop_item', $params);
+        $rsDelete = $this->db->update('ext_shop_item', $params,[
+            'item_ext_status' => 'D'
+        ]);
         if($this->isApi){
             $this->returnJson($rsDelete);
         }else{
@@ -99,6 +102,7 @@ class ExtShopItem {
                 'item_target' => $params['item_target'],
                 'item_id' => $params['item_id'],
                 'extend_type' => 'L',
+                'item_ext_status' => 'U'
             ])
             ->get();
         if($this->isApi){
@@ -115,7 +119,8 @@ class ExtShopItem {
                 'item_target' => $params['item_target'],
                 'item_id' => $params['item_id'],
                 'extend_type' => 'L',
-                'item_ext_link_key' => $params['item_ext_link_key']
+                'item_ext_link_key' => $params['item_ext_link_key'],
+                'item_ext_status' => 'U'
             ])
             ->getOne();
         if (!empty($itemLink)) {
@@ -131,7 +136,8 @@ class ExtShopItem {
                 ->where([
                     'item_target' => $params['item_target'],
                     'item_id' => $params['item_id'],
-                    'extend_type' => 'L'
+                    'extend_type' => 'L',
+                    'item_ext_status' => 'U'
                 ])
                 ->get();
             $this->returnJson($itemLinks);
@@ -205,7 +211,7 @@ CREATE TABLE `ext_shop_item` (
   `item_buy_count` int(11) DEFAULT NULL COMMENT '다운로드 제한 횟수',
   `item_download_days` int(11) DEFAULT NULL COMMENT '구매후 추가되는 일수',
   `item_use_days` int(11) DEFAULT NULL COMMENT '구매후 사용가능한 일수',
-  `item_extend_status` varchar(1) DEFAULT NULL COMMENT '상태',
+  `item_ext_status` varchar(1) DEFAULT NULL COMMENT '상태',
   `create_user` varchar(50) DEFAULT NULL COMMENT '생성인',
   `created_date` datetime DEFAULT NULL COMMENT '생성일',
   `updated_date` datetime DEFAULT NULL COMMENT '수정일',

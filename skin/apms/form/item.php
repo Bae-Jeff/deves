@@ -1562,16 +1562,13 @@ $pg_anchor .='</ul>';
                     <td><button class="btn_frmline" onclick="addLink()" type="button">+ 추가하기</button></td>
                 </tr> 
             </tbody>
-            <pre>
-            <?php 
-            ini_set('display_errors', 1);
-            ini_set('display_startup_errors', 1);
-            error_reporting(E_ALL);
+            <?php
             $extendLinks = $extItem->getItemLinks([
                     'item_target' => 'A',
                     'item_id' => $it['it_id']
             ]);
-
+            dump($extendLinks);
+            dump($db->getLastQuery());
             ?>
             <tbody id="link_list">
                 <?php 
@@ -1612,57 +1609,11 @@ $pg_anchor .='</ul>';
             	
             </tbody>
         </table>
-        <script type="text/javascript">
-            function getItemLinkKey() {
-            	  var characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            	  var timestamp = new Date().getTime();
-            	  var randomString = '';
-            	  
-            	  for (var i = 0; i < 6; i++) {
-            	    randomString += characters.charAt(Math.floor(Math.random() * characters.length));
-            	  }
-            	  
-            	  return (timestamp + randomString).toUpperCase();
-        	}
-			function addLink(){
-				var count = $('#link_list tr').length;
-				var linkKey = getItemLinkKey();
-				var temp =  `
-					<tr>
-						<input type="hidden" name="item_ext_link_key[]" value="`+linkKey+`">
-                    	<td style="text-align:center">
-                            #`+(count+1)+`
-                        </td>
-                        <td>
-                            <label><input type="text" name="item_ext_link_name[`+linkKey+`]" class="frm_input sl" placeholder="링크이름" ></label>
-                        </td>
-                        <td>
-                            <label><input type="text" name="item_ext_link[`+linkKey+`]" class="frm_input sl"placeholder="링크주소" ></label>
-                        </td>
-                        <td align="center">
-                        </td>
-                        <td align="center">
-                            <label><input type="checkbox" name="item_ext_link_is_buy[`+linkKey+`]"> 구매</label>
-                        </td>
-                        <td align="center">
-                            <label><input type="checkbox" name="item_ext_link_is_download[`+linkKey+`]"> 다운</label>
-                        </td>
-                        <td align="center">
-                            <label><input type="checkbox" name="item_ext_link_read[`+linkKey+`]"> 보기</label>
-                        </td>
-                        <td align="center">
-                            <label><input type="checkbox" name="item_ext_link_guest[`+linkKey+`]"> 비회원</label>
-                        </td>
-                    </tr>
-				`;
-				console.log(temp);
-				$('#link_list').append(temp);
-			}
-        </script>
         <h2 class="h2_frm">버전 및 부가정보</h2>
         <?php 
-//        $extendConfig = $extItem($it['it_id'])->getVersionInfo() ;
-        
+        $extendConfig = $extItem->getItemVersion(['item_target'=>'A', 'item_id'=>$it_id]) ;
+        dump($extendConfig);
+        dump($db->getLastQuery());
         ?>
         <table class="tbl_frm01 tbl_wrap">
             <caption>버전 및 부가정보</caption>
@@ -2025,6 +1976,50 @@ function categorychange(f)
 }
 
 categorychange(document.fitemform);
+function getItemLinkKey() {
+    var characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    var timestamp = new Date().getTime();
+    var randomString = '';
+
+    for (var i = 0; i < 6; i++) {
+        randomString += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+
+    return (timestamp + randomString).toUpperCase();
+}
+function addLink(){
+    var count = $('#link_list tr').length;
+    var linkKey = getItemLinkKey();
+    var temp =  `
+					<tr>
+						<input type="hidden" name="item_ext_link_key[]" value="`+linkKey+`">
+                    	<td style="text-align:center">
+                            #`+(count+1)+`
+                        </td>
+                        <td>
+                            <label><input type="text" name="item_ext_link_name[`+linkKey+`]" class="frm_input sl" placeholder="링크이름" ></label>
+                        </td>
+                        <td>
+                            <label><input type="text" name="item_ext_link[`+linkKey+`]" class="frm_input sl"placeholder="링크주소" ></label>
+                        </td>
+                        <td align="center">
+                        </td>
+                        <td align="center">
+                            <label><input type="checkbox" name="item_ext_link_is_buy[`+linkKey+`]"> 구매</label>
+                        </td>
+                        <td align="center">
+                            <label><input type="checkbox" name="item_ext_link_is_download[`+linkKey+`]"> 다운</label>
+                        </td>
+                        <td align="center">
+                            <label><input type="checkbox" name="item_ext_link_read[`+linkKey+`]"> 보기</label>
+                        </td>
+                        <td align="center">
+                            <label><input type="checkbox" name="item_ext_link_guest[`+linkKey+`]"> 비회원</label>
+                        </td>
+                    </tr>
+				`;
+    $('#link_list').append(temp);
+}
 $(function(){
     <?php
     if(count($extendLinks) < 1){

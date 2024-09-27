@@ -729,7 +729,7 @@ $extItem->setItemVersion([
     'item_buy_count' => $_POST['item_buy_count']??3,
     'item_download_days' => $_POST['item_download_days']??30,
     'item_use_days' => $_POST['item_use_days']??30,
-    'item_extend_status' => 'Y',
+    'item_ext_status' => 'Y',
     'create_user' => $member['mb_id']
 ]);
 // var_dump($_SESSION);
@@ -765,6 +765,7 @@ foreach ($_POST['item_ext_link_key'] as $keyIndex => $linkKey){
             'item_ext_link_is_download' => !empty($_POST['item_ext_link_is_download'][$linkKey]) && $_POST['item_ext_link_is_download'][$linkKey] == 'on'?'Y':'N',
             'item_ext_link_read' => !empty($_POST['item_ext_link_read'][$linkKey]) && $_POST['item_ext_link_read'][$linkKey] == 'on'?'Y':'N',
             'item_ext_link_guest' => !empty($_POST['item_ext_link_guest'][$linkKey]) && $_POST['item_ext_link_guest'][$linkKey] == 'on'?'Y':'N',
+            'item_ext_status' => 'U',
             'create_user' => $member['mb_id']
         ));
 //         echo 'result Set '.$rsSetting;

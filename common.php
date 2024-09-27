@@ -846,15 +846,20 @@ ini_set('display_errors', 1); // 오류를 화면에 표시
 
 // 선택적으로 로그 파일에 기록할 수도 있습니다.
 ini_set('log_errors', 1); // 오류를 로그 파일에 기록
-ini_set('error_log', G5_LIB_PATH.'/ExtShop/error-'.date('y-m-d').'.log'); // 로그 파일 경로 설정
+ini_set('error_log', G5_LIB_PATH.'/ExtShop/logs/error-'.date('y-m-d').'.log'); // 로그 파일 경로 설정
 
 include_once(G5_LIB_PATH.'/ExtShop/ExtDB.php');
 include_once(G5_LIB_PATH.'/ExtShop/ExtShopItem.php');
 include_once(G5_LIB_PATH.'/ExtShop/ExtShopItemLog.php');
 include_once(G5_LIB_PATH.'/ExtShop/ExtShopItemOrder.php');
-$extDb = new DB(G5_MYSQL_HOST, G5_MYSQL_USER, G5_MYSQL_PASSWORD, G5_MYSQL_DB);
-$extItem = new ExtShopItem($extDb);
-$extItemLog = new ExtShopItemLog($extDb);
-$extItemOrder = new ExtShopItemOrder($extDb);
+$db = new DB(G5_MYSQL_HOST, G5_MYSQL_USER, G5_MYSQL_PASSWORD, G5_MYSQL_DB);
+$extItem = new ExtShopItem($db);
+$extItemLog = new ExtShopItemLog($db);
+$extItemOrder = new ExtShopItemOrder($db);
+function dump($param){
+    echo '<pre style=" font-size: 10px; background: #555; padding: 3px; color: #fff;line-height: 10px; ">';
+    print_r($param);
+    echo '</pre>';
+}
 ################################ 
 ?>
