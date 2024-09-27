@@ -721,7 +721,7 @@ $qstr = "$qstr&amp;sca=$sca&amp;page=$page";
  */
 
 ## 버전정보 , 다운 정보 입력
-setItemVersionConfig(array(
+$extItem->setItemVersion([
     'extend_type' => 'I', //Info ,Link
     'item_target' => 'A',
     'item_id' => $it_id,
@@ -731,7 +731,7 @@ setItemVersionConfig(array(
     'item_use_days' => $_POST['item_use_days']??30,
     'item_extend_status' => 'Y',
     'create_user' => $member['mb_id']
-));
+]);
 // var_dump($_SESSION);
 ## 링크 정보  등록
 // foreach ($_POST['item_ext_link_delete'] as $key => $value){
@@ -744,7 +744,7 @@ foreach ($_POST['item_ext_link_key'] as $keyIndex => $linkKey){
     $isDelete =  !empty($_POST['item_ext_link_delete'][$linkKey]) && $_POST['item_ext_link_delete'][$linkKey] == "on";
    
     if($isDelete){
-        $rsDelete = deleteItemLinkExteds(array(
+        $rsDelete = $extItem->deleteItemLink(array(
             'item_target' => 'A',
             'item_id' => $it_id,
             'item_ext_link_key'=> $linkKey
@@ -753,7 +753,7 @@ foreach ($_POST['item_ext_link_key'] as $keyIndex => $linkKey){
 //             echo '<br>--------deleted '.$linkKey.'<br>';
         }
     }else{
-        $rsSetting = setItemLinkExtends(array(
+        $rsSetting = $extItem->setItemLink(array(
             'item_target' => 'A', //Admin // Seller
             'extend_type' => 'L', //Info ,Link
             'item_id' => $it_id,

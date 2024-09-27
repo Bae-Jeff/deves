@@ -1567,8 +1567,11 @@ $pg_anchor .='</ul>';
             ini_set('display_errors', 1);
             ini_set('display_startup_errors', 1);
             error_reporting(E_ALL);
-            $extendLinks = getItemLinkExtends($it['it_id']);
-//             var_dump($extendLinks);
+            $extendLinks = $extItem->getItemLinks([
+                    'item_target' => 'A',
+                    'item_id' => $it['it_id']
+            ]);
+
             ?>
             <tbody id="link_list">
                 <?php 
@@ -1604,37 +1607,6 @@ $pg_anchor .='</ul>';
                     </tr>
                     <?php 
                     }
-                }else{
-                    $linkKey = getItemLinkKey();
-                ?>
-                    <tr>
-                		<input type="hidden" name="item_ext_link_key[]" value="<?=$linkKey?>">
-                    	<td style="text-align:center">
-                            #1
-                        </td>
-                        <td>
-                            <label><input type="text" name="item_ext_link_name[<?=$linkKey?>]" class="frm_input sl" placeholder="링크이름" ></label>
-                        </td>
-                        <td>
-                            <label><input type="text" name="item_ext_link[<?=$linkKey?>]" class="frm_input sl"placeholder="링크주소" ></label>
-                        </td>
-                        <td align="center">
-    <!--                         <label><input type="checkbox" name="item_ext_link_delete[]"> 삭제</label> -->
-                        </td>
-                        <td align="center">
-                            <label><input type="checkbox" name="item_ext_link_is_buy[<?=$linkKey?>]"> 구매</label>
-                        </td>
-                        <td align="center">
-                            <label><input type="checkbox" name="item_ext_link_is_download[<?=$linkKey?>]"> 다운</label>
-                        </td>
-                        <td align="center">
-                            <label><input type="checkbox" name="item_ext_link_read[<?=$linkKey?>]"> 보기</label>
-                        </td>
-                        <td align="center">
-                            <label><input type="checkbox" name="item_ext_link_guest[<?=$linkKey?>]"> 비회원</label>
-                        </td>
-                    </tr>
-                <?php 
                 }
                 ?>
             	
@@ -1689,7 +1661,7 @@ $pg_anchor .='</ul>';
         </script>
         <h2 class="h2_frm">버전 및 부가정보</h2>
         <?php 
-        $extendConfig = getItemVersionConfig($it['it_id']) ;
+//        $extendConfig = $extItem($it['it_id'])->getVersionInfo() ;
         
         ?>
         <table class="tbl_frm01 tbl_wrap">
@@ -2053,5 +2025,13 @@ function categorychange(f)
 }
 
 categorychange(document.fitemform);
-
+$(function(){
+    <?php
+    if(count($extendLinks) < 1){
+    ?>
+    addLink();
+    <?php
+    }
+    ?>
+});
 </script>

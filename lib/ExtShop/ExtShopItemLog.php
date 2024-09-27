@@ -2,8 +2,9 @@
 
 class ExtShopItemLog {
     protected $db;
+    protected $isApi = false;
     protected $params = [];
-    protected $attrs = [
+    protected $table = [
         'uuid',
         'item_id',
         'item_option',
@@ -16,8 +17,9 @@ class ExtShopItemLog {
         'created_date',
         'updated_date'
     ];
-    public function __construct($db) {
+    public function __construct($db,$isApi = false) {
         $this->db = $db;
+        $this->isApi = $isApi;
     }
     public function checkValidParams($requiredParams) {
         foreach($requiredParams as $param) {
@@ -80,8 +82,12 @@ class ExtShopItemLog {
                 $activeLog = $this->db->select(['*'])->where(['uuid' => $newLog['uuid']])->from('ext_shop_item_log')->getOne();
             }
         }
+        if($this->isApi){
+            $this->returnJson($activeLog);
+        }else{
+            return $activeLog;
+        }
 
-        $this->returnJson($activeLog);
 
     }
     public function create($data) {
@@ -169,3 +175,24 @@ class ExtShopItemLog {
         return $result;
     }
 }
+
+
+/*
+ CREATE TABLE `ext_shop_item_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '순번',
+  `uuid` varchar(36) NOT NULL COMMENT '고유 식별자',
+  `item_id` int(11) DEFAULT NULL COMMENT '상품순번',
+  `item_option` varchar(255) DEFAULT NULL COMMENT '상품옵션',
+  `member_id` varchar(50) DEFAULT NULL COMMENT '회원 ID',
+  `start_date` datetime DEFAULT NULL COMMENT '시작일 (yymmdd)',
+  `end_date` datetime DEFAULT NULL COMMENT '종료일 (yymmdd)',
+  `log_status` varchar(1) DEFAULT NULL COMMENT '로그 상태 (Active, End, Paused)',
+  `remain_download_days` int(11) DEFAULT NULL COMMENT '남은 다운로드 일수',
+  `remain_use_days` int(11) DEFAULT NULL COMMENT '남은 사용 일수',
+  `creater` varchar(50) DEFAULT NULL COMMENT '생성인',
+  `created_date` datetime DEFAULT NULL COMMENT '생성일',
+  `updated_date` datetime DEFAULT NULL COMMENT '수정일',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uuid` (`uuid`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+ * */

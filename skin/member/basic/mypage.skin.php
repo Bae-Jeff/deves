@@ -225,7 +225,7 @@ if($header_skin)
             'member_id' => 'admintest',
             'item_id' => '12321321',
             'item_option' => 'optiontest'
-        ]);
+        ],false);
         print_r($keyLog);
 
 	?>

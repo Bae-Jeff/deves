@@ -576,11 +576,10 @@ $sql = " insert {$g5['g5_shop_order_table']}
                 od_test           = '{$default['de_card_test']}'
                 ";
 $result = sql_query($sql, false);
-err();
 
 #################################### extends
 foreach ($_POST['it_id'] as $iKey => $itemId){
-    $itemVersion = getItemVersionConfig($itemId);
+    $itemVersion = $extItem->getItemExtInfo($itemId);
     $params = array(
         "order_extends_memo" => "root",
         "order_parent" => $od_id,
