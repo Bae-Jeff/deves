@@ -108,7 +108,10 @@ class ExtShopItemLog {
     }
 
     public function delete($conditions) {
-        return $this->db->delete('ext_shop_item_log', $conditions);
+        return $this->db->update('ext_shop_item_log', $conditions,[
+            'log_status' => 'D',
+            'deleted_date' => date('Y-m-d H:i:s')
+        ]);
     }
     public function refreshExpiredLogs($memberId) {
         // 오늘 날짜
@@ -194,6 +197,7 @@ class ExtShopItemLog {
   `creater` varchar(50) DEFAULT NULL COMMENT '생성인',
   `created_date` datetime DEFAULT NULL COMMENT '생성일',
   `updated_date` datetime DEFAULT NULL COMMENT '수정일',
+  `deleted_date` datetime DEFAULT NULL COMMENT '삭제일',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

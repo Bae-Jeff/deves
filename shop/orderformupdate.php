@@ -590,7 +590,7 @@ foreach ($_POST['it_id'] as $iKey => $itemId){
         "order_download_days" => $itemVersion['item_download_days']??30,
         "order_extends_status" => "A", // Active Deleted 
         "user_id" => $member['mb_id'],
-        "create_user" => $member['mb_id']
+        "creater" => $member['mb_id']
     );
     
     addOrderExtends($params);

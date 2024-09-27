@@ -106,7 +106,10 @@ class ExtShopItemOrder {
     }
 
     public function delete($conditions) {
-        return $this->db->delete('ext_shop_item_orders', $conditions);
+        return $this->db->delete('ext_shop_item_orders', $conditions,[
+            'ex_order_status' => 'D',
+            'deleted_date' => date('Y-m-d H:i:s')
+        ]);
     }
 }
 
@@ -130,6 +133,7 @@ CREATE TABLE `ext_shop_item_orders` (
   `creater` varchar(50) DEFAULT NULL COMMENT '생성인',
   `created_date` datetime DEFAULT NULL COMMENT '생성일',
   `updated_date` datetime DEFAULT NULL COMMENT '수정일',
+  `deleted_date` datetime DEFAULT NULL COMMENT '삭제일',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

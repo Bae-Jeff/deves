@@ -118,7 +118,7 @@ if(!empty($_POST['order_extends_days']) && $_POST['order_extends_days'] == 'subm
         "order_extends_memo" => $_POST['order_exteds_add_memo']??"",
         "order_extends_status" => "S",
         "user_id" => $_POST['user_id'],
-        "create_user" => $mb_id
+        "creater" => $mb_id
     );
     $rsAdd = addOrderExtends($params);
 

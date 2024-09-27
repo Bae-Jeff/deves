@@ -41,6 +41,7 @@ class ExtShopItem {
             ])
             ->getOne();
         if(!empty($itemVersion)){
+            $params['updated_date'] = date('Y-m-d H:i:s');
             $rsSet = $this->db->update('ext_shop_item', $params, [
                 'id' => $itemVersion['id']
             ]);
@@ -49,12 +50,13 @@ class ExtShopItem {
                 'extend_type' => 'I', //Info ,Link
                 'item_target' => $params['item_target'],
                 'item_id' => $params['item_id'],
-                'item_version' => '1.0.0',
-                'item_buy_count' => 0,
-                'item_download_days' => 30,
-                'item_use_days' => 30,
+                'item_version' => $params['item_version']??'1.0.0',
+                'item_buy_count' => $params['item_buy_count']??0,
+                'item_download_days' => $params['item_download_days']??30,
+                'item_use_days' => $params['item_use_days']??30,
                 'item_ext_status' => 'Y',
-                'create_user' => $params['create_user']
+                'creater' => $params['creater'],
+                'created_date' => date('Y-m-d H:i:s')
             ]);
         }
         if($this->isApi){
@@ -87,7 +89,8 @@ class ExtShopItem {
     }
     public function deleteItemLink($params){
         $rsDelete = $this->db->update('ext_shop_item', $params,[
-            'item_ext_status' => 'D'
+            'item_ext_status' => 'D',
+            'deleted_date' => date('Y-m-d H:i:s')
         ]);
         if($this->isApi){
             $this->returnJson($rsDelete);
@@ -124,10 +127,12 @@ class ExtShopItem {
             ])
             ->getOne();
         if (!empty($itemLink)) {
+            $itemLink['updated_date'] = date('Y-m-d H:i:s');
             $rsSet = $this->db->update('ext_shop_item', $itemLink, [
                 'id' => $itemLink['id']
             ]);
         } else {
+            $params['created_date'] = date('Y-m-d H:i:s');
             $rsSet = $this->db->insert('ext_shop_item',$params);
         }
         if ($this->isApi) {
@@ -212,7 +217,7 @@ CREATE TABLE `ext_shop_item` (
   `item_download_days` int(11) DEFAULT NULL COMMENT '구매후 추가되는 일수',
   `item_use_days` int(11) DEFAULT NULL COMMENT '구매후 사용가능한 일수',
   `item_ext_status` varchar(1) DEFAULT NULL COMMENT '상태',
-  `create_user` varchar(50) DEFAULT NULL COMMENT '생성인',
+  `creater` varchar(50) DEFAULT NULL COMMENT '생성인',
   `created_date` datetime DEFAULT NULL COMMENT '생성일',
   `updated_date` datetime DEFAULT NULL COMMENT '수정일',
   `deleted_date` datetime DEFAULT NULL COMMENT '삭제일',
