@@ -101,16 +101,7 @@ class ExtShopItemOrder {
             ->get();
     }
 
-    public function update($data, $conditions) {
-        return $this->db->update('ext_shop_item_orders', $data, $conditions);
-    }
 
-    public function delete($conditions) {
-        return $this->db->delete('ext_shop_item_orders', $conditions,[
-            'ex_order_status' => 'D',
-            'deleted_date' => date('Y-m-d H:i:s')
-        ]);
-    }
 }
 
 /*

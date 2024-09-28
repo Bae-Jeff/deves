@@ -88,10 +88,10 @@ class ExtShopItem {
         }
     }
     public function deleteItemLink($params){
-        $rsDelete = $this->db->update('ext_shop_item', $params,[
+        $rsDelete = $this->db->update('ext_shop_item', [
             'item_ext_status' => 'D',
             'deleted_date' => date('Y-m-d H:i:s')
-        ]);
+        ],$params);
         if($this->isApi){
             $this->returnJson($rsDelete);
         }else{

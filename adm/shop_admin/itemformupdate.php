@@ -721,7 +721,7 @@ $qstr = "$qstr&amp;sca=$sca&amp;page=$page";
  */
 
 ## 버전정보 , 다운 정보 입력
-dump($_POST);
+//dump($_POST);
 $extItem->setItemVersion([
     'extend_type' => 'I', //Info ,Link
     'item_target' => 'A',
@@ -750,6 +750,7 @@ foreach ($_POST['item_ext_link_key'] as $keyIndex => $linkKey){
             'item_id' => $it_id,
             'item_ext_link_key'=> $linkKey
         ));
+        dump($db->getLastQuery());
 
     }else{
         $rsSetting = $extItem->setItemLink(array(
@@ -772,7 +773,7 @@ foreach ($_POST['item_ext_link_key'] as $keyIndex => $linkKey){
     
 }
 
-// exit;
+ exit;
 
 if ($w == "u") {
     goto_url("./itemform.php?w=u&amp;it_id=$it_id&amp;fn=$fn&amp;$qstr");
