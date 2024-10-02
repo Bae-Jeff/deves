@@ -857,7 +857,7 @@ $extItem = new ExtShopItem($db);
 $extItemLog = new ExtShopItemLog($db);
 $extItemOrder = new ExtShopItemOrder($db);
 function dump($param){
-    echo '<pre style=" font-size: 10px; background: #555; padding: 3px; color: #fff;line-height: 10px; ">';
+    echo '<pre style=" font-size: 10px; background: #555; padding: 3px; color: #fff;white-space: pre-wrap; word-wrap: break-word; line-height: 15px !important; max-width: 60vw; ">';
     print_r($param);
     echo '</pre>';
 }

@@ -1567,8 +1567,8 @@ $pg_anchor .='</ul>';
                     'item_target' => 'A',
                     'item_id' => $it['it_id']
             ]);
-            dump($extendLinks);
-            dump($db->getLastQuery());
+//            dump($extendLinks);
+//            dump($db->getLastQuery());
             ?>
             <tbody id="link_list">
                 <?php 
@@ -1612,8 +1612,8 @@ $pg_anchor .='</ul>';
         <h2 class="h2_frm">버전 및 부가정보</h2>
         <?php 
         $extendConfig = $extItem->getItemVersion(['item_target'=>'A', 'item_id'=>$it_id]) ;
-        dump($extendConfig);
-        dump($db->getLastQuery());
+//        dump($extendConfig);
+//        dump($db->getLastQuery());
         ?>
         <table class="tbl_frm01 tbl_wrap">
             <caption>버전 및 부가정보</caption>

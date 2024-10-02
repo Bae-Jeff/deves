@@ -41,6 +41,7 @@ class ExtShopItem {
             ])
             ->getOne();
         if(!empty($itemVersion)){
+
             $params['updated_date'] = date('Y-m-d H:i:s');
             $rsSet = $this->db->update('ext_shop_item', $params, [
                 'id' => $itemVersion['id']
@@ -127,8 +128,8 @@ class ExtShopItem {
             ])
             ->getOne();
         if (!empty($itemLink)) {
-            $itemLink['updated_date'] = date('Y-m-d H:i:s');
-            $rsSet = $this->db->update('ext_shop_item', $itemLink, [
+            $params['updated_date'] = date('Y-m-d H:i:s');
+            $rsSet = $this->db->update('ext_shop_item', $params, [
                 'id' => $itemLink['id']
             ]);
         } else {

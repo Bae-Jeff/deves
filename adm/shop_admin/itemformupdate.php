@@ -750,7 +750,7 @@ foreach ($_POST['item_ext_link_key'] as $keyIndex => $linkKey){
             'item_id' => $it_id,
             'item_ext_link_key'=> $linkKey
         ));
-        dump($db->getLastQuery());
+//        dump($db->getLastQuery());
 
     }else{
         $rsSetting = $extItem->setItemLink(array(
@@ -768,12 +768,12 @@ foreach ($_POST['item_ext_link_key'] as $keyIndex => $linkKey){
             'item_ext_status' => 'U',
             'creater' => $member['mb_id']
         ));
-//         echo 'result Set '.$rsSetting;
+//        dump($db->getLastQuery());
     }
     
 }
 
- exit;
+// exit;
 
 if ($w == "u") {
     goto_url("./itemform.php?w=u&amp;it_id=$it_id&amp;fn=$fn&amp;$qstr");
