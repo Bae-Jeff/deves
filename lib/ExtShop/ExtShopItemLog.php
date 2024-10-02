@@ -70,7 +70,7 @@ class ExtShopItemLog {
                 $activeLog  =  $pausedLog;
             }else{ // Active , Paused 두 Log 모두 없으면
                 $newLog = [
-                    'uuid' => uniqid(),
+                    'uuid' => mekeUuid(),
                     'member_id' => $memberId,
                     'item_id' => $itemId,
                     'item_option' => $itemOption,
@@ -141,7 +141,7 @@ class ExtShopItemLog {
             if ($expirationDate < $today) {
                 // 만료된 로그를 "End"로 업데이트
                 $this->db->update('ext_shop_item_log', ['log_status' => 'E'], ['id' => $log['id']]);
-                $newLogUUid =  uniqid();
+                $newLogUUid =  mekeUuid();
                 // 새로운 로그를 추가합니다.
                 $newLogData = [
                     'uuid' => $newLogUUid, // 새로운 UUID 생성

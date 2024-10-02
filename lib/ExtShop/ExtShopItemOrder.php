@@ -2,6 +2,7 @@
 
 class ExtShopItemOrder {
     protected $db;
+    protected $params;
     protected $itemLog;
     protected $isApi = false;
     public function __construct($db,$isApi = false) {
@@ -10,6 +11,7 @@ class ExtShopItemOrder {
         $this->isApi = $isApi;
     }
     public function checkValidParams($requiredParams) {
+        dump($this->params);
         foreach($requiredParams as $param) {
             if(!isset($this->params[$param])) {
                 throw new Exception('Invalid params : '.$param);
@@ -25,6 +27,7 @@ class ExtShopItemOrder {
         exit;
     }
     public function updateExtOrderStatus($params){
+        $this->params =  $params;
         $this->checkValidParams([
             'order_id',
 //            'item_id',
@@ -50,12 +53,13 @@ class ExtShopItemOrder {
         );
     }
     public function insertExtOrder($params){
+        global $extItemLog;
+        $this->params =  $params;
         $this->checkValidParams([
             'member_id',
             'item_id',
             'item_option',
             'order_id',
-            'item_Option',
             'item_use_days',
             'item_download_days'
         ]);
@@ -64,6 +68,14 @@ class ExtShopItemOrder {
             'item_id' => $params['item_id'],
             'item_option' => $params['item_option'],
         ]);
+        $params['ex_order_parent'] = $activeLog['uuid'];
+        $rsInsert = $this->db->insert('ext_shop_item_orders',$params);
+        if($rsInsert){
+            return $rsInsert;
+        }else{
+            makeLog('Ext Order 생성 실패');
+            makeLog('Params : '.json_encode($params));
+        };
         dump($activeLog);
     }
     public function insertOrUpdate($params) {
@@ -85,7 +97,7 @@ class ExtShopItemOrder {
         if (empty($activeLog)) {
             // Active 로그가 없는 경우, 새로운 로그를 삽입
             $newLogData = [
-                'uuid' => uniqid(),
+                'uuid' => mekeUuid(),
                 'item_id' => $itemId,
                 'item_options' => $orderData['item_option_full'], // 필요한 옵션
                 'member_id' => $memberId,
