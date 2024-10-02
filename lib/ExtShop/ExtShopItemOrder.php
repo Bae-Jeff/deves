@@ -11,7 +11,6 @@ class ExtShopItemOrder {
         $this->isApi = $isApi;
     }
     public function checkValidParams($requiredParams) {
-        dump($this->params);
         foreach($requiredParams as $param) {
             if(!isset($this->params[$param])) {
                 throw new Exception('Invalid params : '.$param);
@@ -32,25 +31,32 @@ class ExtShopItemOrder {
             'order_id',
 //            'item_id',
 //            'item_option',
-            'ex_order_status'
+            'order_status'
         ]);
-        $curOrder = $this->db->select('*')
+        $curOrder = $this->db->select(['*'])
             ->from('ext_shop_item_orders')
             ->where([
                 'order_id' => $params['order_id']
             ])
+            ->orderBy([
+                'id' => 'desc'
+            ])
             ->getOne();
-        $stateText =  $params['ex_order_status'] ?? '';
-        $newChageLog = $curOrder['change_log'].date('Y-m-d H:i:s').' => ['.$_SESSION['ss_mb_id'].'] '.$stateText.' 로 업데이트 <br>';
+        $stateText =  $params['order_status'] .'('.$params['update_state_text'].')';
+        $newChageLog = $curOrder['change_log'].date('Y-m-d H:i:s').' => ['.$_SESSION['ss_mb_id'].'] '.$stateText.' 주문 상태수정 <br>';
         $this->db->update('ext_shop_item_orders',[
-            'order_id' => $params['order_id'],
+            'ex_order_status' => $params['order_status'],
+            'change_log' => $newChageLog,
+            'updated_date' => date('Y-m-d H:i:s')
+        ],
+        [
+            'id' => $curOrder['id'],
 //            'item_id' => $params['item_id'],
 //            'item_option' => $params['item_option_full']
-        ],[
-            'ex_order_status' => $params['ex_order_status'],
-            'change_log' => $newChageLog
         ]
         );
+        makeLog('Order '.'['.$_SESSION['ss_mb_id'].'] '.$stateText.' 로 업데이트 <br>');
+        makeLog($this->db->getLastQuery());
     }
     public function insertExtOrder($params){
         global $extItemLog;
@@ -61,7 +67,8 @@ class ExtShopItemOrder {
             'item_option',
             'order_id',
             'item_use_days',
-            'item_download_days'
+            'item_download_days',
+            'order_status'
         ]);
         $activeLog = $extItemLog->getKeyLog([
             'member_id' => $params['member_id'],
@@ -69,14 +76,29 @@ class ExtShopItemOrder {
             'item_option' => $params['item_option'],
         ]);
         $params['ex_order_parent'] = $activeLog['uuid'];
-        $rsInsert = $this->db->insert('ext_shop_item_orders',$params);
+        $newChageLog = date('Y-m-d H:i:s').' => ['.$_SESSION['ss_mb_id'].']  주문 생성 <br>';
+
+        $rsInsert = $this->db->insert('ext_shop_item_orders',[
+            'uuid' => mekeUuid(),
+            'ex_order_parent' => $activeLog['id'],
+            'order_id' => $params['order_id'],
+            'item_id' => $params['item_id'],
+            'item_option_full' => $params['item_option'],
+            'item_use_days' => $params['item_use_days'],
+            'item_download_days' => $params['item_download_days'],
+            'member_id' => $params['member_id'],
+            'change_log' => $newChageLog,
+            'ex_order_status' => $params['order_status']??'R',
+            'creater' => $_SESSION['ss_mb_id'],
+            'created_date' => date('Y-m-d H:i:s')
+        ]);
         if($rsInsert){
+            makeLog('Order 생성 완료');
             return $rsInsert;
         }else{
-            makeLog('Ext Order 생성 실패');
+            makeLog('Order 생성 실패');
             makeLog('Params : '.json_encode($params));
         };
-        dump($activeLog);
     }
     public function insertOrUpdate($params) {
         // 주문 데이터에서 필요한 필드 추출

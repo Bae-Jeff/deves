@@ -153,8 +153,8 @@ sql_query($sql);
 // Extends : 주문 취소 처리 - 2024.06.13
 $extItemOrder->updateExtOrderStatus([
     'order_id' => $od_id,
-    'ex_order_status' => 'C',
-    'update_state_text' => '취소'
+    'order_status' => 'C',
+    'update_state_text' => '주문자 본인 직접 취소'
 ]);
 // 주문취소 회원의 포인트를 되돌려 줌
 if ($od['od_receipt_point'] > 0)

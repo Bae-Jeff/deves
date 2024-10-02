@@ -586,7 +586,7 @@ foreach ($_POST['it_id'] as $iKey => $itemId){
         'order_id' => $od_id,
         'item_use_days' => $itemVersion['item_use_days']??30,
         'item_download_days' =>  $itemVersion['item_download_days']??30,
-        'ex_order_status' => 'R'
+        'order_status' => 'R'
     ]);
 }
  
