@@ -22,14 +22,15 @@ class ExtShopItem {
         exit;
     }
     public function getItemVersion($params){
-        return $this->db->select(['*'])
+        $rsVersion = $this->db->select(['*'])
             ->from('ext_shop_item')
             ->where([
-                'item_target' => $params['item_target'],
+                'item_target' => $params['item_target']??'A',
                 'item_id' => $params['item_id'],
                 'extend_type'=> 'I'
             ])
             ->getOne();
+        return $rsVersion;
     }
     public function setItemVersion($params){
         $itemVersion =$this->db->select(['*'])
@@ -60,18 +61,18 @@ class ExtShopItem {
                 'created_date' => date('Y-m-d H:i:s')
             ]);
         }
+        $itemVersion = $this->db->select(['*'])
+            ->from('ext_shop_item')
+            ->where([
+                'item_target' => $params['item_target'],
+                'item_id' => $params['item_id'],
+                'extend_type'=> 'I'
+            ])
+            ->getOne();
         if($this->isApi){
-            $itemVersion = $this->db->select(['*'])
-                ->from('ext_shop_item')
-                ->where([
-                    'item_target' => $params['item_target'],
-                    'item_id' => $params['item_id'],
-                    'extend_type'=> 'I'
-                ])
-                ->getOne();
             $this->returnJson($itemVersion);
         }else{
-            return $rsSet;
+            return $itemVersion;
         }
     }
     public function getItemLinkByKey($itemLinkKey){

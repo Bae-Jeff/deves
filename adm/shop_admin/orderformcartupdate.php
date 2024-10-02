@@ -361,11 +361,18 @@ $sql .= " where od_id = '$od_id' ";
 sql_query($sql);
 // Extends : 주문 처리 - 2024.06.13
 if(in_array($_POST['ct_status'],['입금','완료'])){
-    confirmOrderExtend($od_id, $_POST['ct_status'],'S');
+    $extItemOrder->updateExtOrderStatus([
+        'order_id' => $od_id,
+        'ex_order_status' => 'S',
+        'update_state_text' => $_POST['ct_status']
+    ]);
 }else{
     if(in_array($_POST['ct_status'],['취소','환불','품절'])){
-        confirmOrderExtend($od_id, $_POST['ct_status'],'C');
-        echo $od_id.$_POST['ct_status'].'C';
+        $extItemOrder->updateExtOrderStatus([
+            'order_id' => $od_id,
+            'ex_order_status' => 'C',
+            'update_state_text' => $_POST['ct_status']
+        ]);
     }
 }
 // end Extends

@@ -107,7 +107,8 @@ if(!empty($_POST['order_extends_days']) && $_POST['order_extends_days'] == 'subm
     
     
     #################################### extends
-    $itemVersion = getItemVersionConfig($_POST['it_id']);
+    $itemVersion = $extItem->getItemVersion($_POST['it_id']);//getItemVersionConfig($_POST['it_id']);
+//    dump($itemVersion);
 //     $addDays =  $_POST['order_exteds_days_type'] == 'plus'? $_POST['order_extends_days']: -$_POST['order_extends_days'];
     $params = array(
         "hardInsert" => true,

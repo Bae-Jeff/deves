@@ -24,12 +24,54 @@ class ExtShopItemOrder {
         ],JSON_PRETTY_PRINT);
         exit;
     }
-    public function insertOrUpdate($orderData) {
+    public function updateExtOrderStatus($params){
+        $this->checkValidParams([
+            'order_id',
+//            'item_id',
+//            'item_option',
+            'ex_order_status'
+        ]);
+        $curOrder = $this->db->select('*')
+            ->from('ext_shop_item_orders')
+            ->where([
+                'order_id' => $params['order_id']
+            ])
+            ->getOne();
+        $stateText =  $params['ex_order_status'] ?? '';
+        $newChageLog = $curOrder['change_log'].date('Y-m-d H:i:s').' => ['.$_SESSION['ss_mb_id'].'] '.$stateText.' 로 업데이트 <br>';
+        $this->db->update('ext_shop_item_orders',[
+            'order_id' => $params['order_id'],
+//            'item_id' => $params['item_id'],
+//            'item_option' => $params['item_option_full']
+        ],[
+            'ex_order_status' => $params['ex_order_status'],
+            'change_log' => $newChageLog
+        ]
+        );
+    }
+    public function insertExtOrder($params){
+        $this->checkValidParams([
+            'member_id',
+            'item_id',
+            'item_option',
+            'order_id',
+            'item_Option',
+            'item_use_days',
+            'item_download_days'
+        ]);
+        $activeLog = $extItemLog->getKeyLog([
+            'member_id' => $params['member_id'],
+            'item_id' => $params['item_id'],
+            'item_option' => $params['item_option'],
+        ]);
+        dump($activeLog);
+    }
+    public function insertOrUpdate($params) {
         // 주문 데이터에서 필요한 필드 추출
-        $memberId = $orderData['member_id'];
-        $itemId = $orderData['item_id'];
-        $itemUseDays = $orderData['item_use_days'];
-
+        $memberId = $params['member_id'];
+        $itemId = $params['item_id'];
+        $itemUseDays = $params['item_use_days'];
+        $itemOption = $params[''];
         // Active 로그 확인
         $activeLog = $this->db->select(['*'])
             ->from('ext_shop_item_log')
@@ -105,6 +147,7 @@ class ExtShopItemOrder {
 }
 
 /*
+-- deves.ext_shop_item_orders definition
 
 CREATE TABLE `ext_shop_item_orders` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '순번',
@@ -120,12 +163,13 @@ CREATE TABLE `ext_shop_item_orders` (
   `item_use_days` int(11) DEFAULT NULL COMMENT '사용 가능한 일수',
   `item_download_days` int(11) DEFAULT NULL COMMENT '다운로드 일수',
   `member_id` varchar(50) DEFAULT NULL COMMENT '회원 ID',
-  `ex_order_status` varchar(10) DEFAULT NULL COMMENT '주문 상태 (Registered, Paid, Failed, Deleted)',
+  `ex_order_status` varchar(10) DEFAULT NULL COMMENT '주문 상태 (Registered, Cancel, Paid, Failed, Deleted)',
+  `change_log` text COMMENT '수정일지',
   `creater` varchar(50) DEFAULT NULL COMMENT '생성인',
   `created_date` datetime DEFAULT NULL COMMENT '생성일',
   `updated_date` datetime DEFAULT NULL COMMENT '수정일',
   `deleted_date` datetime DEFAULT NULL COMMENT '삭제일',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
  * */

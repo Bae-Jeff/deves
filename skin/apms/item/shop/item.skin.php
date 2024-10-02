@@ -150,9 +150,9 @@ $is_seller = ($it['pt_id'] && $it['pt_id'] != $config['cf_admin']) ? true : fals
 			<?php if ($it['it_model']) { ?>
 				<tr><th scope="row">모델</th><td><?php echo $it['it_model']; ?></td></tr>
 			<?php } ?>
-			<?php 
-			     $itemVersion = getItemVersionConfig($it_id); 
-	 		      if ($itemVersion['item_version']) { ?>
+			<?php
+            $itemVersion = $extItem->getItemVersion(['item_id' => $it['it_id']]);
+            if ($itemVersion['item_version']) { ?>
 				<tr><th scope="row">버전</th><td><?php echo $itemVersion['item_version']; // ?></td></tr>
 			<?php } ?>
 			<?php if ($itemVersion['item_use_days']) { ?>
