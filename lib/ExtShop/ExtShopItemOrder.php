@@ -25,12 +25,32 @@ class ExtShopItemOrder {
         ],JSON_PRETTY_PRINT);
         exit;
     }
+    public function response($responseData = [],$code = 200,$message = 'success'){
+        if($this->isApi){
+            $this->returnJson($responseData,$code,$message);
+            exit;
+        }else{
+            return $responseData;
+        }
+    }
+
+    public function getLogOrders($params){
+        $this->params =  $params;
+        $this->checkValidParams([
+            'parent_uuid',
+        ]);
+        $orders = $this->db->select(['*'])
+            ->from('ext_shop_item_orders')
+            ->where([
+                'ex_order_parent' => $params['parent_uuid']
+            ])
+            ->get();
+       return $this->response($orders);
+    }
     public function updateExtOrderStatus($params){
         $this->params =  $params;
         $this->checkValidParams([
             'order_id',
-//            'item_id',
-//            'item_option',
             'order_status'
         ]);
         $curOrder = $this->db->select(['*'])
@@ -56,7 +76,7 @@ class ExtShopItemOrder {
         ]
         );
         makeLog('Order '.'['.$_SESSION['ss_mb_id'].'] '.$stateText.' 로 업데이트 <br>');
-        makeLog($this->db->getLastQuery());
+//        makeLog($this->db->getLastQuery());
     }
     public function insertExtOrder($params){
         global $extItemLog;
@@ -80,7 +100,7 @@ class ExtShopItemOrder {
 
         $rsInsert = $this->db->insert('ext_shop_item_orders',[
             'uuid' => mekeUuid(),
-            'ex_order_parent' => $activeLog['id'],
+            'ex_order_parent' => $activeLog['uuid'],
             'order_id' => $params['order_id'],
             'item_id' => $params['item_id'],
             'item_option_full' => $params['item_option'],
@@ -121,7 +141,7 @@ class ExtShopItemOrder {
             $newLogData = [
                 'uuid' => mekeUuid(),
                 'item_id' => $itemId,
-                'item_options' => $orderData['item_option_full'], // 필요한 옵션
+                'item_options' => $params['item_option_full'], // 필요한 옵션
                 'member_id' => $memberId,
                 'start_date' => date('Ymd'), // 오늘 날짜로 설정
                 'log_status' => 'A',
@@ -183,10 +203,11 @@ class ExtShopItemOrder {
 /*
 -- deves.ext_shop_item_orders definition
 
+
 CREATE TABLE `ext_shop_item_orders` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '순번',
   `uuid` varchar(36) NOT NULL COMMENT '고유 식별자',
-  `ex_order_parent` int(11) DEFAULT NULL COMMENT 'ext_shop_item_log의 ID',
+  `ex_order_parent` varchar(36) NOT NULL COMMENT 'ext_shop_item_log의 ID',
   `order_id` varchar(50) DEFAULT NULL COMMENT '주문 ID',
   `order_detail_id` varchar(50) DEFAULT NULL COMMENT '주문 상세 ID',
   `item_id` int(11) DEFAULT NULL COMMENT '상품순번',
@@ -198,12 +219,12 @@ CREATE TABLE `ext_shop_item_orders` (
   `item_download_days` int(11) DEFAULT NULL COMMENT '다운로드 일수',
   `member_id` varchar(50) DEFAULT NULL COMMENT '회원 ID',
   `ex_order_status` varchar(10) DEFAULT NULL COMMENT '주문 상태 (Registered, Cancel, Paid, Failed, Deleted)',
-  `change_log` text COMMENT '수정일지',
+  `change_log` text DEFAULT NULL COMMENT '수정일지',
   `creater` varchar(50) DEFAULT NULL COMMENT '생성인',
   `created_date` datetime DEFAULT NULL COMMENT '생성일',
   `updated_date` datetime DEFAULT NULL COMMENT '수정일',
   `deleted_date` datetime DEFAULT NULL COMMENT '삭제일',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
  * */

@@ -37,6 +37,54 @@ class ExtShopItemLog {
         ],JSON_PRETTY_PRINT);
         exit;
     }
+    public function response($responseData = [],$code = 200,$message = 'success'){
+        if($this->isApi){
+            $this->returnJson($responseData,$code,$message);
+            exit;
+        }else{
+            return $responseData;
+        }
+    }
+
+    public function getLogDetail($params){
+        global $extItemOrder;
+        $this->params = $params;
+        $this->checkValidParams([
+            'uuid',
+        ]);
+
+        $keyLog = $this->db->select(['*'])
+            ->from('ext_shop_item_log')
+            ->where([
+               'uuid'=> $params['uuid']
+            ])
+            ->getOne();
+        $logOrders = $extItemOrder->getLogOrders(['parent_uuid' => $keyLog['uuid']]);
+
+        if($this->isApi){
+            $this->returnJson($logOrders);
+        }else{
+            return $logOrders;
+        }
+    }
+    public function getKeyLogs($params){
+        $this->params = $params;
+        $this->checkValidParams([
+            'member_id',
+        ]);
+        $rsActiveLogs = $this->db->select(['*'])
+            ->from('ext_shop_item_log')
+            ->where([
+                'member_id' => $params['member_id'],
+                'log_status' => 'A'
+            ])
+            ->get();
+        if($this->isApi){
+            $this->returnJson($rsActiveLogs);
+        }else{
+            return $rsActiveLogs;
+        }
+    }
     public function getKeyLog($params){
         $this->params = $params;
         $this->checkValidParams([
@@ -88,10 +136,54 @@ class ExtShopItemLog {
         }else{
             return $activeLog;
         }
-
-
     }
 
+    public function getLogItemStatus($params){
+        global $extItemOrder;
+        $this->params = $params;
+        $this->checkValidParams([
+            'uuid',
+        ]);
+        $activeLog = $this->db->select(['*'])
+            ->where([
+                'uuid' => $params['uuid']
+            ])
+            ->from('ext_shop_item_log')
+            ->getOne();
+        $logOrders = $extItemOrder->getLogOrders(['parent_uuid' => $params['uuid']]);
+        $totalUseDays = 0;
+        $totalDownDays = 0;
+        $today = date('Ymd');
+        foreach ($logOrders as $order) {
+            if($order['ex_order_status'] == 'S'){
+                $totalUseDays += $order['item_use_days'];
+                $totalDownDays += $order['item_download_days'];
+            }
+        }
+
+        // start_date와 totalUseDays를 비교하여 만료 체크
+        $startDate = $activeLog['start_date'];
+        $expirationDownDate = date('Ymd', strtotime($startDate . " + $totalDownDays days"));
+        $expirationUseDate = date('Ymd', strtotime($startDate . " + $totalUseDays days"));
+
+        // 오늘 날짜와 만료 날짜를 비교하여 남은 일수를 계산합니다.
+        $today = new DateTime($today);
+        //        -------------------
+        $expirationDateUse = new DateTime($expirationUseDate);
+        $intervalUse = $today->diff($expirationDateUse);
+        $remainUseDays = $intervalUse->days;
+        //        -------------------
+        $expirationDateDown = new DateTime($expirationDownDate);
+        $intervalDown = $today->diff($expirationDateDown);
+        $remainDownDays = $intervalDown->days; // 남은 일수
+
+        return $this->response([
+            'remainUseDays' => $remainUseDays == 1 ? 0: $remainUseDays,
+            'remainDownDays' => $remainDownDays == 1 ? 0: $remainDownDays,
+            'useEndDate' => $expirationUseDate,
+            'downEndDate' => $expirationDownDate
+        ]);
+    }
     public function update($data, $conditions) {
         return $this->db->update('ext_shop_item_log', $data, $conditions);
     }

@@ -357,7 +357,7 @@ function submitAddItemOrderExtend(){
                 $ct_price['stotal'] = $opt_price * $opt['ct_qty'];
                 $ct_point['stotal'] = $opt['ct_point'] * $opt['ct_qty'];
                 
-                $itemVers = getItemVersionConfig($row['it_id']);
+                $itemVers = $extItem->getItemVersion($_POST['it_id']);
                 $trExt = '';
                 if(!empty($itemVers)){
                     $trExt = 'rowspan="2"';

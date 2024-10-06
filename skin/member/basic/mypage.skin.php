@@ -217,20 +217,6 @@ if($header_skin)
 	</div>
 
 	<?php if(IS_YC) { // 영카트 ?>
-        <pre>
-	<?php 
-// 	err();
-// 	dump($orderdItems);
-        $keyLog = $extItemLog->getKeyLog([
-            'member_id' => 'admintest',
-            'item_id' => '12321321',
-            'item_option' => 'optiontest'
-        ],false);
-        print_r($keyLog);
-
-	?>
-            </pre>
-		<br>
 		<section>
 			<h4>나의 주문상품</h4>
 				<div class="table-responsive">
@@ -245,7 +231,20 @@ if($header_skin)
         				</tr>
     				</thead>
     			    <tbody>
-    			    <?php/*
+    			    <?php
+                    $rsLogs = $extItemLog->getKeyLogs([
+                        'member_id'=> $member['mb_id']
+                    ]);
+                    foreach ($rsLogs as $lKey => $log){
+                        dump($log);
+                        $logSatatus = $extItemLog->getLogItemStatus(['uuid'=> $log['uuid']]);
+                        $logDetail = $extItemLog->getLogDetail(['uuid' => $log['uuid']]);
+                        dump($logSatatus);
+                        dump($logDetail);
+//                        dump($db->getLastQuery());
+
+                    }
+                    /*
                     dump(getUuid());
     			    if(count($orderdItems) > 0){
 //     			        dump($db);
