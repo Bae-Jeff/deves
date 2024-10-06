@@ -178,8 +178,8 @@ class ExtShopItemLog {
         $remainDownDays = $intervalDown->days; // 남은 일수
 
         return $this->response([
-            'remainUseDays' => $remainUseDays == 1 ? 0: $remainUseDays,
-            'remainDownDays' => $remainDownDays == 1 ? 0: $remainDownDays,
+            'remainUseDays' => $remainUseDays <= 1 ? 0: $remainUseDays,
+            'remainDownDays' => $remainDownDays <= 1 ? 0: $remainDownDays,
             'useEndDate' => $expirationUseDate,
             'downEndDate' => $expirationDownDate
         ]);
