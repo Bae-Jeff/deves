@@ -235,26 +235,14 @@ if($header_skin)
                     $rsLogs = $extItemLog->getKeyLogs([
                         'member_id'=> $member['mb_id']
                     ]);
-                    foreach ($rsLogs as $lKey => $log){
-                        dump($log);
+                    foreach ($rsLogs as $lKey => $exRow){
+//                        dump($log);
                         $logSatatus = $extItemLog->getLogItemStatus(['uuid'=> $log['uuid']]);
                         $logDetail = $extItemLog->getLogDetail(['uuid' => $log['uuid']]);
-                        dump($logSatatus);
-                        dump($logDetail);
+//                        dump($logSatatus);
+//                        dump($logDetail);
 //                        dump($db->getLastQuery());
 
-                    }
-                    /*
-                    dump(getUuid());
-    			    if(count($orderdItems) > 0){
-//     			        dump($db);
-//     			        dump($orderdItems);  
-    			        foreach($orderdItems as $exKey => $exRow){
-    			            err();
-    			            $exDateStatus = getItemUseStatus($exRow);
-    			            dump($exDateStatus);
-//     			            dump(getItemUseState($exRow));
-//     			            $exRow['status'] = getItemUseStatus($exRow);
     			    ?>
     					<tr>
     						<td>
@@ -271,9 +259,9 @@ if($header_skin)
     							?>
     						</td>
     						<?php 
-    						if($exRow['order_extends_status']== "R" && $exDateStatus['remainDays'] > 0){
+    						if($exRow['order_extends_status']== "R" && $logSatatus['remainUseDays'] > 0){
     						    $strExStatus = '사용중';
-    						}else if($exRow['order_extends_status']== "S" && $exDateStatus['remainDays'] > 0){
+    						}else if($exRow['order_extends_status']== "S" && $logSatatus['remainUseDays'] > 0){
     						    $strExStatus = '정지';
     						}else{
     						    $strExStatus = '대기';
@@ -290,8 +278,8 @@ if($header_skin)
     					<tr data="<?=$exRow['order_option_etc']?>" class="hidden">
     						<td colspan="5" class="order-detail">
     							<?php 
-    							foreach($exDateStatus['orderHistory'] as $oKey => $oRow){
-    							    
+    							foreach($logDetail as $oKey => $oRow){
+    							    dump($oRow);
     							}
     							?>
     						</td>
@@ -300,11 +288,7 @@ if($header_skin)
     			        }
     			    }else{
 					?>
-					
-					<?php 
-    			    }
-*/
-					?>
+
 				    </tbody>
 			    </table>
 			</div>
