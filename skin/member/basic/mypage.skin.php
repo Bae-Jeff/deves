@@ -8,24 +8,6 @@ if($header_skin)
 	include_once('./header.php');
 
 ?>
-<style>
-.item-name, .item-option {
-    text-align: left;
-}
-.item-name {
-    font-weight: bold;   
-}
-.item-option i {
-    font-family: initial;
-    text-decoration: none;
-    margin: 0 3px;
-}
-.item-option span {
-    background: #efefef;
-    padding: 1px 6px;
-    border-radius: 2px;
-}
-</style>
 <div class="mypage-skin">
 	<div class="panel panel-default view-author">
 		<div class="panel-heading">
@@ -217,70 +199,102 @@ if($header_skin)
 	</div>
 
 	<?php if(IS_YC) { // 영카트 ?>
-		<section>
-			<h4>나의 주문상품</h4>
-				<div class="table-responsive">
-				<table class="table mypage-tbl">			
-					<thead>
-        				<tr>
-        					<th scope="col">상품코드</th>
-        					<th scope="col">옵션정보</th>
-        					<th scope="col">상태</th>
-        					<th scope="col">주문내역</th>
-        					<th scope="col">만료기간</th>
-        				</tr>
-    				</thead>
-    			    <tbody>
-    			    <?php
-                    $rsLogs = $extItemLog->getKeyLogs([
-                        'member_id'=> $member['mb_id']
-                    ]);
 
-                    foreach ($rsLogs as $lKey => $exRow){
-                        $logSatatus = $extItemLog->getLogItemStatus(['uuid'=> $exRow['uuid']]);
-                        $logDetail = $extItemLog->getLogDetail(['uuid' => $exRow['uuid']]);
-    			    ?>
-    					<tr>
-    						<td>
-    							<a href="../shop/item.php?it_id="></a>
-    						</td>
-    						<td>
-    							<?php
-
-                                dump($exRow);
-                                dump($logSatatus);
-
+        <!-- 최근 주문내역 시작 { -->
+        <section>
+            <h4>최근 주문상품</h4>
+            <style>
+                .item-image { width: 150px; }
+                .item-image img { border: 3px solid #dcdcdc; }
+                .item-row { background: #fbfbfb; padding: 13px 15px; border-radius: 3px; border: 1px solid #dcdcdc; margin: 0px; }
+                .item-row .item-name { font-weight: bold; font-size: 16px; margin-bottom: 10px; border-bottom: 1px solid #dcdcdc; text-align: left; padding: 4px 0px; }
+                .item-row dd { text-align: left; }
+                .item-row .item-detail-title { display: inline-block; width: 19%; text-align: right; padding-right: 10px;    font-weight: 800; }
+                .item-row .item-detail-info { font-weight: 800; font-size: 12px; }
+            </style>
+            <?php
+            $rsLogs = $extItemLog->getKeyLogs([
+                'member_id'=> $member['mb_id']
+            ]);
+            ?>
+            <div class="table-responsive">
+                <table class="table mypage-tbl">
+                    <thead>
+                    <tr>
+                        <th scope="col">상품</th>
+                        <th scope="col">상세</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                    if(count($rsLogs) > 0) {
+                        foreach ($rsLogs as $lKey => $exRow) {
+                            $logSatatus = $extItemLog->getLogItemStatus(['uuid' => $exRow['uuid']]);
+                            $logDetail = $extItemLog->getLogDetail(['uuid' => $exRow['uuid']]);
+                            $itemImage = get_it_thumbnail($exRow['it_img1'], 150, 150);
+                    ?>
+                        <tr>
+                            <td class="item-image">
+                                <?php if(!empty($itemImage)){
+                                    echo $itemImage;
+                                }else{
                                 ?>
-    						</td>
-    						<td></td>
-    						<td><button onclick="showOrderDetail('')">상세내역</button></td>
-    						<td>
-    						</td>
-    					</tr>
-    					<tr data="" class="hidden">
-    						<td colspan="5" class="order-detail">
-    							<?php
-    							dump($logDetail);
-    							?>
-    						</td>
-    					</tr>
-					<?php
-    			        }
-    			    }else {
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="150" height="150" viewBox="0 0 200 200">
+                                        <!-- 배경 사각형 -->
+                                        <rect width="100%" height="100%" fill="#ccc" />
 
+                                        <!-- 가운데 텍스트 -->
+                                        <text x="50%" y="50%" fill="#555" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" alignment-baseline="middle">
+                                            No Image
+                                        </text>
+                                    </svg>
+
+                                <?php
+                                }
+                                ?>
+                            </td>
+                            <td>
+                                <dl class="item-row">
+                                    <dt class="item-name"><?=$exRow['it_name']?></dt>
+                                    <dd>
+                                        <p><span class="item-detail-title">구매 옵션 &nbsp;:</span> <span class="item-detail-info"><?=str_replace('|',' ',str_replace('','<i> > </i>',$exRow['item_option']))?></span></p>
+                                    </dd>
+                                    <dd>
+                                        <?php
+                                        $useEndDate = substr($logSatatus['useEndDate'], 0, 4) . '-' . substr($logSatatus['useEndDate'], 4, 2) . '-' . substr($logSatatus['useEndDate'], 6, 2);
+                                        $downEndDate = substr($logSatatus['downEndDate'], 0, 4) . '-' . substr($logSatatus['downEndDate'], 4, 2) . '-' . substr($logSatatus['downEndDate'], 6, 2);
+                                        ?>
+                                        <p> <span class="item-detail-title">사용 만료일 &nbsp;:</span> <span class="item-detail-info"><?=$logSatatus['remainUseDays']?> 일 ( <?=$useEndDate?> 까지)</span></p>
+                                        <p> <span class="item-detail-title">다운 만료일 &nbsp;:</span> <span class="item-detail-info"><?=$logSatatus['remainDownDays']?> 일 ( <?=$downEndDate?> 까지)</span></p>
+                                    </dd>
+                                    <dd>
+                                        <?php
+//                                        dump($logDetail);
+                                        ?>
+                                    </dd>
+                                </dl>
+                            </td>
+                            <td>
+                                <p><button class="btn btn-black btn-block">주문상세</button> </p>
+                                <p><button class="btn btn-color btn-block">삭제기</button> </p>
+                            </td>
+                        </tr>
+                    <?php }
+                    }else{
+                        ?>
+                        <tr><td colspan="3">주문하신 상품이 없습니다.</td></tr>
+                    <?
                     }
-					?>
+                    ?>
 
-				    </tbody>
-			    </table>
-			</div>
-			<p class="text-right">
-<!-- 				<a href="./orderinquiry.php"><i class="fa fa-arrow-right"></i> 주뭄상품 더보기</a> -->
-			</p>
-		</section>
+                    </tbody>
+                </table>
+            </div>
+        </section>
 		<!-- 최근 주문내역 시작 { -->
 		<section>
-			<h4>최근 주문내역</h4>
+			<h4>사용 중 상품</h4>
 			<?php
 				// 최근 주문내역
 			    $sql = " select * from {$g5['g5_shop_order_table']} where mb_id = '{$member['mb_id']}' order by od_id desc limit 0, 5 ";

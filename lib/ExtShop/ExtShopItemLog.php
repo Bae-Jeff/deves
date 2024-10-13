@@ -72,12 +72,18 @@ class ExtShopItemLog {
         $this->checkValidParams([
             'member_id',
         ]);
-        $rsActiveLogs = $this->db->select(['*'])
+        $rsActiveLogs = $this->db->select([
+            'ext_shop_item_log.*',
+            'g5_shop_item.it_name',
+            'g5_shop_item.it_img1',
+            'g5_shop_item.it_price',
+            ])
             ->from('ext_shop_item_log')
             ->where([
                 'member_id' => $params['member_id'],
                 'log_status' => 'A'
             ])
+            ->join('g5_shop_item', 'g5_shop_item.it_id = ext_shop_item_log.item_id')
             ->get();
         if($this->isApi){
             $this->returnJson($rsActiveLogs);
