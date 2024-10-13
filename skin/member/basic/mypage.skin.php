@@ -237,51 +237,30 @@ if($header_skin)
                     ]);
 
                     foreach ($rsLogs as $lKey => $exRow){
-//                        dump($log);
                         $logSatatus = $extItemLog->getLogItemStatus(['uuid'=> $exRow['uuid']]);
                         $logDetail = $extItemLog->getLogDetail(['uuid' => $exRow['uuid']]);
-//                        dump($logSatatus);
-//                        dump($logDetail);
-//                        dump($db->getLastQuery());
-
     			    ?>
     					<tr>
     						<td>
-    							<a href="../shop/item.php?it_id=<?=$exRow['order_item_id']?>"><?=$exRow['order_item_id']?></a>
+    							<a href="../shop/item.php?it_id="></a>
     						</td>
     						<td>
-    							<p class="item-name"><?=$exRow['item']['it_name']?></p>
-    							<?php 
-    							if(!empty($exRow['order_option_etc'])){
-    							?>
-    							<p class="item-option">┕ <span><?=str_replace('',' </span><i>›</i><span> ',str_replace('|',' : ',$exRow['order_option_etc']))?></span></p>
-    							<?php 
-    							}
-    							?>
+    							<?php
+
+                                dump($exRow);
+                                dump($logSatatus);
+
+                                ?>
     						</td>
-    						<?php 
-    						if($exRow['order_extends_status']== "R" && $logSatatus['remainUseDays'] > 0){
-    						    $strExStatus = '사용중';
-    						}else if($exRow['order_extends_status']== "S" && $logSatatus['remainUseDays'] > 0){
-    						    $strExStatus = '정지';
-    						}else{
-    						    $strExStatus = '대기';
-    						}
-    						
-    						?>
-    						<td><?=$strExStatus?></td>
-    						<td><button onclick="showOrderDetail('<?=$exRow['order_option_etc']?>')">상세내역</button></td>
+    						<td></td>
+    						<td><button onclick="showOrderDetail('')">상세내역</button></td>
     						<td>
-    							<?=!empty($exDateStatus['endDate'])?'<span class="end-date">'.$exDateStatus['endDate'].'</span>':''?>
-    							<?=isset($exDateStatus['remainDays'])?'<span class="remain-days">( '.$exDateStatus['remainDays'].' )</span>':''?>
     						</td>
     					</tr>
-    					<tr data="<?=$exRow['order_option_etc']?>" class="hidden">
+    					<tr data="" class="hidden">
     						<td colspan="5" class="order-detail">
     							<?php 
-    							foreach($logDetail as $oKey => $oRow){
-    							    dump($oRow);
-    							}
+    							dump($logDetail);
     							?>
     						</td>
     					</tr>
