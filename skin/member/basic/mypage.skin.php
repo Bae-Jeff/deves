@@ -238,8 +238,8 @@ if($header_skin)
 
                     foreach ($rsLogs as $lKey => $exRow){
 //                        dump($log);
-                        $logSatatus = $extItemLog->getLogItemStatus(['uuid'=> $log['uuid']]);
-                        $logDetail = $extItemLog->getLogDetail(['uuid' => $log['uuid']]);
+                        $logSatatus = $extItemLog->getLogItemStatus(['uuid'=> $exRow['uuid']]);
+                        $logDetail = $extItemLog->getLogDetail(['uuid' => $exRow['uuid']]);
 //                        dump($logSatatus);
 //                        dump($logDetail);
 //                        dump($db->getLastQuery());
