@@ -259,14 +259,16 @@ if($header_skin)
     					</tr>
     					<tr data="" class="hidden">
     						<td colspan="5" class="order-detail">
-    							<?php 
+    							<?php
     							dump($logDetail);
     							?>
     						</td>
     					</tr>
-					<?php 
+					<?php
     			        }
-    			    }else{
+    			    }else {
+
+                    }
 					?>
 
 				    </tbody>
