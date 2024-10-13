@@ -277,7 +277,7 @@ if($header_skin)
                             </td>
                             <td>
                                 <p><button class="btn btn-black btn-block">주문상세</button> </p>
-                                <p><button class="btn btn-color btn-block">삭제기</button> </p>
+                                <p><button class="btn btn-color btn-block">삭제</button> </p>
                             </td>
                         </tr>
                     <?php }
