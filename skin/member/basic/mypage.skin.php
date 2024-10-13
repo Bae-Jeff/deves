@@ -235,6 +235,7 @@ if($header_skin)
                     $rsLogs = $extItemLog->getKeyLogs([
                         'member_id'=> $member['mb_id']
                     ]);
+
                     foreach ($rsLogs as $lKey => $exRow){
 //                        dump($log);
                         $logSatatus = $extItemLog->getLogItemStatus(['uuid'=> $log['uuid']]);
