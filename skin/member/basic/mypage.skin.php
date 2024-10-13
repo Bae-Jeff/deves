@@ -256,7 +256,7 @@ if($header_skin)
                             </td>
                             <td>
                                 <dl class="item-row">
-                                    <dt class="item-name"><?=$exRow['it_name']?></dt>
+                                    <dt class="item-name"><a href="<?=G5_URL?>/shop/item.php?it_id=<?=$exRow['item_id']?>"><?=$exRow['it_name']?></a></dt>
                                     <dd>
                                         <p><span class="item-detail-title">구매 옵션 &nbsp;:</span> <span class="item-detail-info"><?=str_replace('|',' ',str_replace('','<i> > </i>',$exRow['item_option']))?></span></p>
                                     </dd>
