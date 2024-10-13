@@ -172,10 +172,16 @@ class ExtShopItemLog {
         $expirationDateUse = new DateTime($expirationUseDate);
         $intervalUse = $today->diff($expirationDateUse);
         $remainUseDays = $intervalUse->days;
+        if($expirationDateUse < $today){
+            $remainUseDays = -1 *  $remainUseDays;
+        }
         //        -------------------
         $expirationDateDown = new DateTime($expirationDownDate);
         $intervalDown = $today->diff($expirationDateDown);
         $remainDownDays = $intervalDown->days; // 남은 일수
+        if($expirationDateDown < $today){
+            $remainDownDays = -1 *  $remainDownDays;
+        }
 
         return $this->response([
             'remainUseDays' => $remainUseDays <= 1 ? 0: $remainUseDays,
