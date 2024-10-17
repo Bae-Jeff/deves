@@ -846,15 +846,50 @@ ini_set('display_errors', 1); // 오류를 화면에 표시
 
 // 선택적으로 로그 파일에 기록할 수도 있습니다.
 ini_set('log_errors', 1); // 오류를 로그 파일에 기록
-ini_set('error_log', G5_LIB_PATH.'/ExtShop/error-'.date('y-m-d').'.log'); // 로그 파일 경로 설정
+ini_set('error_log', G5_LIB_PATH.'/ExtShop/logs/error-'.date('y-m-d').'.log'); // 로그 파일 경로 설정
 
 include_once(G5_LIB_PATH.'/ExtShop/ExtDB.php');
 include_once(G5_LIB_PATH.'/ExtShop/ExtShopItem.php');
 include_once(G5_LIB_PATH.'/ExtShop/ExtShopItemLog.php');
 include_once(G5_LIB_PATH.'/ExtShop/ExtShopItemOrder.php');
-$extDb = new DB(G5_MYSQL_HOST, G5_MYSQL_USER, G5_MYSQL_PASSWORD, G5_MYSQL_DB);
-$extItem = new ExtShopItem($extDb);
-$extItemLog = new ExtShopItemLog($extDb);
-$extItemOrder = new ExtShopItemOrder($extDb);
+$db = new DB(G5_MYSQL_HOST, G5_MYSQL_USER, G5_MYSQL_PASSWORD, G5_MYSQL_DB);
+$extItem = new ExtShopItem($db);
+$extItemLog = new ExtShopItemLog($db);
+$extItemOrder = new ExtShopItemOrder($db);
+function dump($param){
+    echo '<pre style=" font-size: 10px; background: #555; padding: 3px; color: #fff;white-space: pre-wrap; word-wrap: break-word; line-height: 15px !important; max-width: 60vw; ">';
+    print_r($param);
+    echo '</pre>';
+}
+function mekeUuid() {
+    // 16진수로 32자리 문자열을 생성
+    $data = random_bytes(16); // PHP 7 이상에서 사용 가능
+    $data[6] = chr(ord($data[6]) & 0x0f | 0x40); // 4비트로 버전 4 지정
+    $data[8] = chr(ord($data[8]) & 0x3f | 0x80); // 2개의 상위 비트를 10으로 설정
+
+    return sprintf(
+        '%08s-%04s-%04x-%04x-%12s',
+        bin2hex(substr($data, 0, 4)),
+        bin2hex(substr($data, 4, 2)),
+        // UUID version 4 (variant 1) - time-based
+        (hexdec(bin2hex(substr($data, 6, 2))) & 0x0fff) | 0x4000,
+        (hexdec(bin2hex(substr($data, 8, 2))) & 0x3fff) | 0x8000,
+        bin2hex(substr($data, 10, 6))
+    );
+}
+function makeLog($message)
+{
+    // 날짜 형식으로 파일명 생성
+    $logFile = 'extends_' . date('Y-m-d') . '.log';
+
+    // 로그 파일 경로 (현재 디렉토리에 생성됨)
+    $logPath = G5_LIB_PATH.'/ExtShop/logs/' . $logFile;
+
+    // 현재 시간과 로그 메시지 결합
+    $logMessage = '[' . date('Y-m-d H:i:s') . '] ' . $message . PHP_EOL;
+
+    // 로그 파일에 내용 추가 (파일이 없으면 생성됨)
+    file_put_contents($logPath, $logMessage, FILE_APPEND);
+}
 ################################ 
 ?>

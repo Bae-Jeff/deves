@@ -713,7 +713,7 @@ $qstr = "$qstr&amp;sca=$sca&amp;page=$page";
  */
 
 ## 버전정보 , 다운 정보 입력
-setItemVersionConfig(array(
+$extItem->setItemVersion([
     'extend_type' => 'I', //Info ,Link
     'item_target' => 'A',
     'item_id' => $it_id,
@@ -721,9 +721,9 @@ setItemVersionConfig(array(
     'item_buy_count' => $_POST['item_buy_count']??3,
     'item_download_days' => $_POST['item_download_days']??30,
     'item_use_days' => $_POST['item_use_days']??30,
-    'item_extend_status' => 'Y',
-    'create_user' => $member['mb_id']
-));
+    'item_ext_status' => 'Y',
+    'creater' => $member['mb_id']
+]);
 // var_dump($_SESSION);
 
 ## 링크 정보  등록
@@ -733,21 +733,21 @@ setItemVersionConfig(array(
 
 // exit;
 foreach ($_POST['item_ext_link_key'] as $keyIndex => $linkKey){
-    
+
     $isDelete =  !empty($_POST['item_ext_link_delete'][$linkKey]) && $_POST['item_ext_link_delete'][$linkKey] == "on";
-    
+
     if($isDelete){
-        $rsDelete = deleteItemLinkExteds(array(
-            'item_target' => 'S',
+        $rsDelete = $extItem->deleteItemLink(array(
+            'item_target' => 'A',
             'item_id' => $it_id,
             'item_ext_link_key'=> $linkKey
         ));
         if($rsDelete){
-            //             echo '<br>--------deleted '.$linkKey.'<br>';
+//             echo '<br>--------deleted '.$linkKey.'<br>';
         }
     }else{
-        $rsSetting = setItemLinkExtends(array(
-            'item_target' => 'S', //Admin // Seller
+        $rsSetting = $extItem->setItemLink(array(
+            'item_target' => 'A', //Admin // Seller
             'extend_type' => 'L', //Info ,Link
             'item_id' => $it_id,
             'item_ext_link_key' => $linkKey,
@@ -758,13 +758,12 @@ foreach ($_POST['item_ext_link_key'] as $keyIndex => $linkKey){
             'item_ext_link_is_download' => !empty($_POST['item_ext_link_is_download'][$linkKey]) && $_POST['item_ext_link_is_download'][$linkKey] == 'on'?'Y':'N',
             'item_ext_link_read' => !empty($_POST['item_ext_link_read'][$linkKey]) && $_POST['item_ext_link_read'][$linkKey] == 'on'?'Y':'N',
             'item_ext_link_guest' => !empty($_POST['item_ext_link_guest'][$linkKey]) && $_POST['item_ext_link_guest'][$linkKey] == 'on'?'Y':'N',
-            'create_user' => $member['mb_id']
+            'creater' => $member['mb_id']
         ));
-        //         echo 'result Set '.$rsSetting;
+//         echo 'result Set '.$rsSetting;
     }
-    
-}
 
+}
 
 
 

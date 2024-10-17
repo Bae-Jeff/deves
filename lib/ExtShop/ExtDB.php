@@ -3,6 +3,8 @@ class DB
 {
     private $connection;
     private $query;
+    private $lastQuery; // 마지막 쿼리를 저장할 변수 추가
+    private $lastBindings = []; // 마지막 실행된 쿼리의 바인딩 값 저장
     private $select = '*';
     private $from;
     private $where = [];
@@ -60,7 +62,6 @@ class DB
         return $this;
     }
 
-    // whereNot 추가
     public function whereNot($conditions = [])
     {
         foreach ($conditions as $field => $value) {
@@ -70,7 +71,6 @@ class DB
         return $this;
     }
 
-    // whereIn 추가
     public function whereIn($field, $values = [])
     {
         if (!empty($values)) {
@@ -83,7 +83,6 @@ class DB
         return $this;
     }
 
-    // whereNotIn 추가
     public function whereNotIn($field, $values = [])
     {
         if (!empty($values)) {
@@ -118,19 +117,22 @@ class DB
 
     public function getOne()
     {
-        // SQL 작성
         $sql = "SELECT $this->select FROM $this->from";
-
         if (!empty($this->joins)) {
             $sql .= ' ' . implode(' ', $this->joins);
         }
         if (!empty($this->where)) {
             $sql .= " WHERE " . implode(' AND ', $this->where);
         }
-        if (!empty($this->orderBy)) {
-            $sql .= " ORDER BY " . implode(', ', $this->orderBy);
-        }
+
+        // 기본적으로 ORDER BY id DESC 추가
+        $sql .= " ORDER BY id DESC";
+
+        // LIMIT 1 설정
         $sql .= " LIMIT 1";
+
+        // 마지막 쿼리 저장
+        $this->lastQuery = $sql;
 
         $stmt = $this->prepare($sql);
         $stmt->execute();
@@ -163,6 +165,9 @@ class DB
             $this->bindings[] = $this->offset;
         }
 
+        // 마지막 쿼리 저장
+        $this->lastQuery = $sql;
+
         $stmt = $this->prepare($sql);
         $stmt->execute();
         $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -179,6 +184,10 @@ class DB
         $placeholders = implode(', ', array_fill(0, count($data), '?'));
 
         $sql = "INSERT INTO $table ($fields) VALUES ($placeholders)";
+
+        // 마지막 쿼리 저장
+        $this->lastQuery = $sql;
+
         foreach ($data as $value) {
             $this->bindings[] = $value;
         }
@@ -202,6 +211,9 @@ class DB
             $sql .= " WHERE " . implode(' AND ', $this->where);
         }
 
+        // 마지막 쿼리 저장
+        $this->lastQuery = $sql;
+
         $stmt = $this->prepare($sql);
         $result = $stmt->execute();
         $this->reset();
@@ -216,6 +228,9 @@ class DB
             $this->where($conditions);
             $sql .= " WHERE " . implode(' AND ', $this->where);
         }
+
+        // 마지막 쿼리 저장
+        $this->lastQuery = $sql;
 
         $stmt = $this->prepare($sql);
         $result = $stmt->execute();
@@ -250,6 +265,9 @@ class DB
             $sql .= " WHERE " . implode(' AND ', $this->where);
         }
 
+        // 마지막 쿼리 저장
+        $this->lastQuery = $sql;
+
         $stmt = $this->prepare($sql);
         $stmt->execute();
         $result = $stmt->get_result()->fetch_assoc();
@@ -259,6 +277,10 @@ class DB
 
     private function prepare($sql)
     {
+        // 쿼리와 바인딩을 저장
+        $this->lastQuery = $sql;
+        $this->lastBindings = $this->bindings; // 쿼리가 실행될 때의 바인딩 값을 따로 저장
+
         $stmt = $this->connection->prepare($sql);
         if ($stmt === false) {
             die("Failed to prepare statement: " . $this->connection->error);
@@ -271,16 +293,18 @@ class DB
         return $stmt;
     }
 
-    public function query($sql)
+    // 마지막으로 실행된 쿼리를 반환하는 메서드
+    public function getLastQuery()
     {
-        $stmt = $this->connection->prepare($sql);
-        if ($stmt === false) {
-            die("Failed to prepare statement: " . $this->connection->error);
+        // 쿼리에 바인딩된 값을 순차적으로 삽입
+        $query = $this->lastQuery;
+        foreach ($this->lastBindings as $binding) {
+            // 문자열일 경우 따옴표를 추가
+            $value = is_numeric($binding) ? $binding : "'$binding'";
+            $query = preg_replace('/\?/', $value, $query, 1);
         }
-        $stmt->execute();
-        $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-        $this->reset();
-        return $result;
+
+        return $query;
     }
 
     public function close()
@@ -288,6 +312,7 @@ class DB
         $this->connection->close();
     }
 }
+
 
 
 

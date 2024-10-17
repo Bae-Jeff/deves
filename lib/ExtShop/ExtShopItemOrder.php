@@ -2,6 +2,7 @@
 
 class ExtShopItemOrder {
     protected $db;
+    protected $params;
     protected $itemLog;
     protected $isApi = false;
     public function __construct($db,$isApi = false) {
@@ -24,12 +25,107 @@ class ExtShopItemOrder {
         ],JSON_PRETTY_PRINT);
         exit;
     }
-    public function insertOrUpdate($orderData) {
-        // 주문 데이터에서 필요한 필드 추출
-        $memberId = $orderData['member_id'];
-        $itemId = $orderData['item_id'];
-        $itemUseDays = $orderData['item_use_days'];
+    public function response($responseData = [],$code = 200,$message = 'success'){
+        if($this->isApi){
+            $this->returnJson($responseData,$code,$message);
+            exit;
+        }else{
+            return $responseData;
+        }
+    }
 
+    public function getLogOrders($params){
+        $this->params =  $params;
+        $this->checkValidParams([
+            'parent_uuid',
+        ]);
+        $orders = $this->db->select(['*'])
+            ->from('ext_shop_item_orders')
+            ->where([
+                'ex_order_parent' => $params['parent_uuid']
+            ])
+            ->get();
+       return $this->response($orders);
+    }
+    public function updateExtOrderStatus($params){
+        $this->params =  $params;
+        $this->checkValidParams([
+            'order_id',
+            'order_status'
+        ]);
+        $curOrder = $this->db->select(['*'])
+            ->from('ext_shop_item_orders')
+            ->where([
+                'order_id' => $params['order_id']
+            ])
+            ->orderBy([
+                'id' => 'desc'
+            ])
+            ->getOne();
+        $stateText =  $params['order_status'] .'('.$params['update_state_text'].')';
+        $newChageLog = $curOrder['change_log'].date('Y-m-d H:i:s').' => ['.$_SESSION['ss_mb_id'].'] '.$stateText.' 주문 상태수정 <br>';
+        $this->db->update('ext_shop_item_orders',[
+            'ex_order_status' => $params['order_status'],
+            'change_log' => $newChageLog,
+            'updated_date' => date('Y-m-d H:i:s')
+        ],
+        [
+            'id' => $curOrder['id'],
+//            'item_id' => $params['item_id'],
+//            'item_option' => $params['item_option_full']
+        ]
+        );
+        makeLog('Order '.'['.$_SESSION['ss_mb_id'].'] '.$stateText.' 로 업데이트 <br>');
+//        makeLog($this->db->getLastQuery());
+    }
+    public function insertExtOrder($params){
+        global $extItemLog;
+        $this->params =  $params;
+        $this->checkValidParams([
+            'member_id',
+            'item_id',
+            'item_option',
+            'order_id',
+            'item_use_days',
+            'item_download_days',
+            'order_status'
+        ]);
+        $activeLog = $extItemLog->getKeyLog([
+            'member_id' => $params['member_id'],
+            'item_id' => $params['item_id'],
+            'item_option' => $params['item_option'],
+        ]);
+        $params['ex_order_parent'] = $activeLog['uuid'];
+        $newChageLog = date('Y-m-d H:i:s').' => ['.$_SESSION['ss_mb_id'].']  주문 생성 <br>';
+
+        $rsInsert = $this->db->insert('ext_shop_item_orders',[
+            'uuid' => mekeUuid(),
+            'ex_order_parent' => $activeLog['uuid'],
+            'order_id' => $params['order_id'],
+            'item_id' => $params['item_id'],
+            'item_option_full' => $params['item_option'],
+            'item_use_days' => $params['item_use_days'],
+            'item_download_days' => $params['item_download_days'],
+            'member_id' => $params['member_id'],
+            'change_log' => $newChageLog,
+            'ex_order_status' => $params['order_status']??'R',
+            'creater' => $_SESSION['ss_mb_id'],
+            'created_date' => date('Y-m-d H:i:s')
+        ]);
+        if($rsInsert){
+            makeLog('Order 생성 완료');
+            return $rsInsert;
+        }else{
+            makeLog('Order 생성 실패');
+            makeLog('Params : '.json_encode($params));
+        };
+    }
+    public function insertOrUpdate($params) {
+        // 주문 데이터에서 필요한 필드 추출
+        $memberId = $params['member_id'];
+        $itemId = $params['item_id'];
+        $itemUseDays = $params['item_use_days'];
+        $itemOption = $params[''];
         // Active 로그 확인
         $activeLog = $this->db->select(['*'])
             ->from('ext_shop_item_log')
@@ -43,9 +139,9 @@ class ExtShopItemOrder {
         if (empty($activeLog)) {
             // Active 로그가 없는 경우, 새로운 로그를 삽입
             $newLogData = [
-                'uuid' => uniqid(),
+                'uuid' => mekeUuid(),
                 'item_id' => $itemId,
-                'item_options' => $orderData['item_option_full'], // 필요한 옵션
+                'item_options' => $params['item_option_full'], // 필요한 옵션
                 'member_id' => $memberId,
                 'start_date' => date('Ymd'), // 오늘 날짜로 설정
                 'log_status' => 'A',
@@ -101,21 +197,17 @@ class ExtShopItemOrder {
             ->get();
     }
 
-    public function update($data, $conditions) {
-        return $this->db->update('ext_shop_item_orders', $data, $conditions);
-    }
 
-    public function delete($conditions) {
-        return $this->db->delete('ext_shop_item_orders', $conditions);
-    }
 }
 
 /*
+-- deves.ext_shop_item_orders definition
+
 
 CREATE TABLE `ext_shop_item_orders` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '순번',
   `uuid` varchar(36) NOT NULL COMMENT '고유 식별자',
-  `ex_order_parent` int(11) DEFAULT NULL COMMENT 'ext_shop_item_log의 ID',
+  `ex_order_parent` varchar(36) NOT NULL COMMENT 'ext_shop_item_log의 ID',
   `order_id` varchar(50) DEFAULT NULL COMMENT '주문 ID',
   `order_detail_id` varchar(50) DEFAULT NULL COMMENT '주문 상세 ID',
   `item_id` int(11) DEFAULT NULL COMMENT '상품순번',
@@ -126,10 +218,12 @@ CREATE TABLE `ext_shop_item_orders` (
   `item_use_days` int(11) DEFAULT NULL COMMENT '사용 가능한 일수',
   `item_download_days` int(11) DEFAULT NULL COMMENT '다운로드 일수',
   `member_id` varchar(50) DEFAULT NULL COMMENT '회원 ID',
-  `ex_order_status` varchar(10) DEFAULT NULL COMMENT '주문 상태 (Registered, Paid, Failed, Deleted)',
+  `ex_order_status` varchar(10) DEFAULT NULL COMMENT '주문 상태 (Registered, Cancel, Paid, Failed, Deleted)',
+  `change_log` text DEFAULT NULL COMMENT '수정일지',
   `creater` varchar(50) DEFAULT NULL COMMENT '생성인',
   `created_date` datetime DEFAULT NULL COMMENT '생성일',
   `updated_date` datetime DEFAULT NULL COMMENT '수정일',
+  `deleted_date` datetime DEFAULT NULL COMMENT '삭제일',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

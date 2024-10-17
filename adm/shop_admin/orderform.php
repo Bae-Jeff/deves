@@ -107,7 +107,8 @@ if(!empty($_POST['order_extends_days']) && $_POST['order_extends_days'] == 'subm
     
     
     #################################### extends
-    $itemVersion = getItemVersionConfig($_POST['it_id']);
+    $itemVersion = $extItem->getItemVersion($_POST['it_id']);//getItemVersionConfig($_POST['it_id']);
+//    dump($itemVersion);
 //     $addDays =  $_POST['order_exteds_days_type'] == 'plus'? $_POST['order_extends_days']: -$_POST['order_extends_days'];
     $params = array(
         "hardInsert" => true,
@@ -118,7 +119,7 @@ if(!empty($_POST['order_extends_days']) && $_POST['order_extends_days'] == 'subm
         "order_extends_memo" => $_POST['order_exteds_add_memo']??"",
         "order_extends_status" => "S",
         "user_id" => $_POST['user_id'],
-        "create_user" => $mb_id
+        "creater" => $mb_id
     );
     $rsAdd = addOrderExtends($params);
 
@@ -356,7 +357,7 @@ function submitAddItemOrderExtend(){
                 $ct_price['stotal'] = $opt_price * $opt['ct_qty'];
                 $ct_point['stotal'] = $opt['ct_point'] * $opt['ct_qty'];
                 
-                $itemVers = getItemVersionConfig($row['it_id']);
+                $itemVers = $extItem->getItemVersion($_POST['it_id']);
                 $trExt = '';
                 if(!empty($itemVers)){
                     $trExt = 'rowspan="2"';

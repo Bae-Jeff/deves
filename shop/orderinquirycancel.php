@@ -150,9 +150,12 @@ $sql = " update {$g5['g5_shop_order_table']}
                 od_shop_memo = concat(od_shop_memo,\"\\n주문자 본인 직접 취소 - ".G5_TIME_YMDHIS." (취소이유 : {$cancel_memo})\")
             where od_id = '$od_id' ";
 sql_query($sql);
-// Extends : 주문 처리 - 2024.06.13
-confirmOrderExtend($od_id, "취소","C");
-
+// Extends : 주문 취소 처리 - 2024.06.13
+$extItemOrder->updateExtOrderStatus([
+    'order_id' => $od_id,
+    'order_status' => 'C',
+    'update_state_text' => '주문자 본인 직접 취소'
+]);
 // 주문취소 회원의 포인트를 되돌려 줌
 if ($od['od_receipt_point'] > 0)
     insert_point($member['mb_id'], $od['od_receipt_point'], "주문번호 $od_id 본인 취소");

@@ -13,6 +13,7 @@ class ExtShopItemLog {
         'log_status',
         'remain_download_days',
         'remain_use_days',
+        'change_log',
         'creater',
         'created_date',
         'updated_date'
@@ -35,6 +36,60 @@ class ExtShopItemLog {
             'data' => $data
         ],JSON_PRETTY_PRINT);
         exit;
+    }
+    public function response($responseData = [],$code = 200,$message = 'success'){
+        if($this->isApi){
+            $this->returnJson($responseData,$code,$message);
+            exit;
+        }else{
+            return $responseData;
+        }
+    }
+
+    public function getLogDetail($params){
+        global $extItemOrder;
+        $this->params = $params;
+        $this->checkValidParams([
+            'uuid',
+        ]);
+
+        $keyLog = $this->db->select(['*'])
+            ->from('ext_shop_item_log')
+            ->where([
+               'uuid'=> $params['uuid']
+            ])
+            ->getOne();
+        $logOrders = $extItemOrder->getLogOrders(['parent_uuid' => $keyLog['uuid']]);
+
+        if($this->isApi){
+            $this->returnJson($logOrders);
+        }else{
+            return $logOrders;
+        }
+    }
+    public function getKeyLogs($params){
+        $this->params = $params;
+        $this->checkValidParams([
+            'member_id',
+        ]);
+        $rsActiveLogs = $this->db->select([
+            'ext_shop_item_log.*',
+            'g5_shop_item.it_name',
+            'g5_shop_item.it_img1',
+            'g5_shop_item.it_price',
+            ])
+            ->from('ext_shop_item_log')
+            ->where([
+                'member_id' => $params['member_id'],
+                'log_status' => 'A'
+            ])
+            ->join('g5_shop_item', 'g5_shop_item.it_id = ext_shop_item_log.item_id')
+            ->get();
+        if($this->isApi){
+            $this->returnJson($rsActiveLogs);
+        }else{
+            return $rsActiveLogs;
+        }
     }
     public function getKeyLog($params){
         $this->params = $params;
@@ -69,7 +124,7 @@ class ExtShopItemLog {
                 $activeLog  =  $pausedLog;
             }else{ // Active , Paused 두 Log 모두 없으면
                 $newLog = [
-                    'uuid' => uniqid(),
+                    'uuid' => mekeUuid(),
                     'member_id' => $memberId,
                     'item_id' => $itemId,
                     'item_option' => $itemOption,
@@ -87,27 +142,69 @@ class ExtShopItemLog {
         }else{
             return $activeLog;
         }
-
-
-    }
-    public function create($data) {
-        return $this->db->insert('ext_shop_item_log', $data);
     }
 
-    public function read($conditions = [], $limit = 10) {
-        return $this->db->select(['*'])
+    public function getLogItemStatus($params){
+        global $extItemOrder;
+        $this->params = $params;
+        $this->checkValidParams([
+            'uuid',
+        ]);
+        $activeLog = $this->db->select(['*'])
+            ->where([
+                'uuid' => $params['uuid']
+            ])
             ->from('ext_shop_item_log')
-            ->where($conditions)
-            ->limit($limit)
-            ->get();
-    }
+            ->getOne();
+        $logOrders = $extItemOrder->getLogOrders(['parent_uuid' => $params['uuid']]);
+        $totalUseDays = 0;
+        $totalDownDays = 0;
+        $today = date('Ymd');
+        foreach ($logOrders as $order) {
+            if($order['ex_order_status'] == 'S'){
+                $totalUseDays += $order['item_use_days'];
+                $totalDownDays += $order['item_download_days'];
+            }
+        }
 
+        // start_date와 totalUseDays를 비교하여 만료 체크
+        $startDate = $activeLog['start_date'];
+        $expirationDownDate = date('Ymd', strtotime($startDate . " + $totalDownDays days"));
+        $expirationUseDate = date('Ymd', strtotime($startDate . " + $totalUseDays days"));
+
+        // 오늘 날짜와 만료 날짜를 비교하여 남은 일수를 계산합니다.
+        $today = new DateTime($today);
+        //        -------------------
+        $expirationDateUse = new DateTime($expirationUseDate);
+        $intervalUse = $today->diff($expirationDateUse);
+        $remainUseDays = $intervalUse->days;
+        if($expirationDateUse < $today){
+            $remainUseDays = -1 *  $remainUseDays;
+        }
+        //        -------------------
+        $expirationDateDown = new DateTime($expirationDownDate);
+        $intervalDown = $today->diff($expirationDateDown);
+        $remainDownDays = $intervalDown->days; // 남은 일수
+        if($expirationDateDown < $today){
+            $remainDownDays = -1 *  $remainDownDays;
+        }
+
+        return $this->response([
+            'remainUseDays' => $remainUseDays <= 1 ? 0: $remainUseDays,
+            'remainDownDays' => $remainDownDays <= 1 ? 0: $remainDownDays,
+            'useEndDate' => $expirationUseDate,
+            'downEndDate' => $expirationDownDate
+        ]);
+    }
     public function update($data, $conditions) {
         return $this->db->update('ext_shop_item_log', $data, $conditions);
     }
 
     public function delete($conditions) {
-        return $this->db->delete('ext_shop_item_log', $conditions);
+        return $this->db->update('ext_shop_item_log', [
+            'log_status' => 'D',
+            'deleted_date' => date('Y-m-d H:i:s')
+        ],$conditions);
     }
     public function refreshExpiredLogs($memberId) {
         // 오늘 날짜
@@ -148,7 +245,7 @@ class ExtShopItemLog {
             if ($expirationDate < $today) {
                 // 만료된 로그를 "End"로 업데이트
                 $this->db->update('ext_shop_item_log', ['log_status' => 'E'], ['id' => $log['id']]);
-                $newLogUUid =  uniqid();
+                $newLogUUid =  mekeUuid();
                 // 새로운 로그를 추가합니다.
                 $newLogData = [
                     'uuid' => $newLogUUid, // 새로운 UUID 생성
@@ -189,9 +286,11 @@ class ExtShopItemLog {
   `log_status` varchar(1) DEFAULT NULL COMMENT '로그 상태 (Active, End, Paused)',
   `remain_download_days` int(11) DEFAULT NULL COMMENT '남은 다운로드 일수',
   `remain_use_days` int(11) DEFAULT NULL COMMENT '남은 사용 일수',
+  `change_log` text DEFAULT NULL COMMENT '수정일지',
   `creater` varchar(50) DEFAULT NULL COMMENT '생성인',
   `created_date` datetime DEFAULT NULL COMMENT '생성일',
   `updated_date` datetime DEFAULT NULL COMMENT '수정일',
+  `deleted_date` datetime DEFAULT NULL COMMENT '삭제일',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

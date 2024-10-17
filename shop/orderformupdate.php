@@ -579,21 +579,15 @@ $result = sql_query($sql, false);
 
 #################################### extends
 foreach ($_POST['it_id'] as $iKey => $itemId){
-    $itemVersion = $extItem->getItemExtInfo($itemId);
-    $params = array(
-        "order_extends_memo" => "root",
-        "order_parent" => $od_id,
-        "order_id" => $od_id,
-        "order_item_id" => $itemId,
-        "order_option_etc" => $itemOption??null,
-        "order_use_days" => $itemVersion['item_use_days']??30,
-        "order_download_days" => $itemVersion['item_download_days']??30,
-        "order_extends_status" => "A", // Active Deleted 
-        "user_id" => $member['mb_id'],
-        "create_user" => $member['mb_id']
-    );
-    
-    addOrderExtends($params);
+    $extItemOrder->insertExtOrder([
+        'member_id' => $member['mb_id'],
+        'item_id' => $itemId,
+        'item_option' => $itemOption??null,
+        'order_id' => $od_id,
+        'item_use_days' => $itemVersion['item_use_days']??30,
+        'item_download_days' =>  $itemVersion['item_download_days']??30,
+        'order_status' => 'R'
+    ]);
 }
  
 ####################################
@@ -737,9 +731,6 @@ if($is_member) {
 
 // APMS : 주문처리 - 2014.07.21
 apms_order($od_id, $od_status, $member['mb_recommend']);
-
-// Extends : 주문 처리 - 2024.06.13
-confirmOrderExtend($od_id, $od_status,"R");
 
 // 쿠폰업데이트
 apms_coupon_update($member['mb_id']);
