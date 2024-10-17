@@ -20,8 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                 $token = $_GET['token'];
                 $rsKeyLogs = $extItemLog->getKeyLogs([
                     'member_id' => $member_id,
-                    'page' => !(empty($_GET['page']))??1,
-                    'per_page' => !(empty($_GET['per_page']))??10,
+                    'page' => !empty($_GET['page']) && is_numeric($_GET['page'])?$_GET['page']:1,
+                    'per_page' => !empty($_GET['per_page']) && is_numeric($_GET['per_page'])?$_GET['per_page']:10,
                 ]);
                 resonseJson($rsKeyLogs);
             } else {
@@ -46,20 +46,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                 $uuid = $_GET['uuid'];
                 $rsItemOrders = $extItemLog->getLogDetail([
                     'uuid' => $uuid,
-                    'page' => !(empty($_GET['page']))??1,
-                    'per_page' => !(empty($_GET['per_page']))??10,
+                    'page' => !empty($_GET['page']) && is_numeric($_GET['page'])?$_GET['page']:1,
+                    'per_page' => !empty($_GET['per_page']) && is_numeric($_GET['per_page'])?$_GET['per_page']:10,
                 ]);
                 resonseJson($rsItemOrders);
-            } else {
-                http_response_code(400);
-                resonseJson(["error" => "Missing uuid parameter"]);
-            }
-            break;
-
-        case 'getItemOrderDetail':
-            if (isset($_GET['uuid'])) {
-                $uuid = $_GET['uuid'];
-                resonseJson(getItemOrderDetail($uuid));
             } else {
                 http_response_code(400);
                 resonseJson(["error" => "Missing uuid parameter"]);
