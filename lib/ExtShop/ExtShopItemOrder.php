@@ -18,10 +18,11 @@ class ExtShopItemOrder {
         }
     }
     public function returnJson($data = [],$code = 200,$message = 'success'){
+        header('Content-Type: application/json');
         echo json_encode([
             'code' => $code,
             'message' => $message,
-            'data' => $data
+            'result' => $data
         ],JSON_PRETTY_PRINT);
         exit;
     }

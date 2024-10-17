@@ -30,16 +30,15 @@ class ExtShopItemLog {
         }
     }
     public function returnJson($data = [],$code = 200,$message = 'success'){
-        echo json_encode([
+        return [
             'code' => $code,
             'message' => $message,
-            'data' => $data
-        ],JSON_PRETTY_PRINT);
-        exit;
+            'result' => $data
+        ];
     }
     public function response($responseData = [],$code = 200,$message = 'success'){
         if($this->isApi){
-            $this->returnJson($responseData,$code,$message);
+            return $this->returnJson($responseData,$code,$message);
             exit;
         }else{
             return $responseData;
@@ -62,7 +61,7 @@ class ExtShopItemLog {
         $logOrders = $extItemOrder->getLogOrders(['parent_uuid' => $keyLog['uuid']]);
 
         if($this->isApi){
-            $this->returnJson($logOrders);
+            return $this->returnJson($logOrders);
         }else{
             return $logOrders;
         }
@@ -86,7 +85,7 @@ class ExtShopItemLog {
             ->join('g5_shop_item', 'g5_shop_item.it_id = ext_shop_item_log.item_id')
             ->get();
         if($this->isApi){
-            $this->returnJson($rsActiveLogs);
+            return $this->returnJson($rsActiveLogs);
         }else{
             return $rsActiveLogs;
         }
@@ -138,7 +137,7 @@ class ExtShopItemLog {
             }
         }
         if($this->isApi){
-            $this->returnJson($activeLog);
+            return $this->returnJson($activeLog);
         }else{
             return $activeLog;
         }
