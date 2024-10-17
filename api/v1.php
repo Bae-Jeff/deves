@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             if (isset($_GET['uuid'])) {
                 $uuid = $_GET['uuid'];
                 $rsKeyLogInfo = $extItemLog->getLogItemStatus(['uuid' => $uuid]);
-                dump($rsKeyLogInfo);
+                resonseJson($rsKeyLogInfo);
             } else {
                 http_response_code(400);
                 resonseJson(["error" => "Missing uuid parameter"]);
@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             if (isset($_GET['uuid'])) {
                 $uuid = $_GET['uuid'];
                 $rsItemOrders = $extItemLog->getLogDetail(['uuid' => $uuid]);
-                dump($rsItemOrders);
+                resonseJson($rsItemOrders);
             } else {
                 http_response_code(400);
                 resonseJson(["error" => "Missing uuid parameter"]);
@@ -69,14 +69,7 @@ function resonseJson($params){
     echo json_encode([
         'code' => $params['code']??200,
         'message' => $params['message']??'success',
-        'result' => [
-            'data' => $params['result']??[],
-            'pagination' => $params['pagination']??[
-                'total' => 0,
-                'perPage' => 0,
-                'currentPage' => 0,
-            ]
-        ]
+        'result' => $params['result']??[]
     ],JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     exit;
 }

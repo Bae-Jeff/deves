@@ -71,6 +71,8 @@ class ExtShopItemLog {
         $this->checkValidParams([
             'member_id',
         ]);
+        $page = $params['page']??1;
+        $perPage = $params['per_page']??10;
         $rsActiveLogs = $this->db->select([
             'ext_shop_item_log.*',
             'g5_shop_item.it_name',
@@ -83,7 +85,7 @@ class ExtShopItemLog {
                 'log_status' => 'A'
             ])
             ->join('g5_shop_item', 'g5_shop_item.it_id = ext_shop_item_log.item_id')
-            ->get();
+            ->paginate($page,$perPage);
         if($this->isApi){
             return $this->returnJson($rsActiveLogs);
         }else{
