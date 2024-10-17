@@ -52,19 +52,30 @@ class ExtShopItemLog {
             'uuid',
         ]);
 
+        $page = !empty($params['page']) && is_numeric($params['page'])?$params['page']:1;
+        $perPage = !empty($params['per_page']) && is_numeric($params['page'])?$params['per_page']:10;
         $keyLog = $this->db->select(['*'])
             ->from('ext_shop_item_log')
             ->where([
                'uuid'=> $params['uuid']
             ])
             ->getOne();
-        $logOrders = $extItemOrder->getLogOrders(['parent_uuid' => $keyLog['uuid']]);
+        if(!empty($keyLog)){
+            $logOrders = $extItemOrder->getLogOrders([
+                'parent_uuid' => $keyLog['uuid'],
+                'page' => $page,
+                'per_page' => $perPage
+            ]);
+        }else{
+            $logOrders = [];
+        }
 
         if($this->isApi){
             return $this->returnJson($logOrders);
         }else{
             return $logOrders;
         }
+
     }
     public function getKeyLogs($params){
         $this->params = $params;
