@@ -228,8 +228,8 @@ if($header_skin)
                     </thead>
                     <tbody>
                     <?php
-                    if(count($rsLogs) > 0) {
-                        foreach ($rsLogs as $lKey => $exRow) {
+                    if(count($rsLogs['data']) > 0) {
+                        foreach ($rsLogs['data'] as $lKey => $exRow) {
                             $logSatatus = $extItemLog->getLogItemStatus(['uuid' => $exRow['uuid']]);
                             $logDetail = $extItemLog->getLogDetail(['uuid' => $exRow['uuid']]);
                             $itemImage = get_it_thumbnail($exRow['it_img1'], 150, 150);
@@ -262,11 +262,11 @@ if($header_skin)
                                     </dd>
                                     <dd>
                                         <?php
-                                        $useEndDate = substr($logSatatus['useEndDate'], 0, 4) . '-' . substr($logSatatus['useEndDate'], 4, 2) . '-' . substr($logSatatus['useEndDate'], 6, 2);
-                                        $downEndDate = substr($logSatatus['downEndDate'], 0, 4) . '-' . substr($logSatatus['downEndDate'], 4, 2) . '-' . substr($logSatatus['downEndDate'], 6, 2);
+                                        $useEndDate = substr($logSatatus['useStatus']['date'], 0, 4) . '-' . substr($logSatatus['useStatus']['date'], 4, 2) . '-' . substr($logSatatus['useStatus']['date'], 6, 2);
+                                        $downEndDate = substr($logSatatus['downloadStatus']['date'], 0, 4) . '-' . substr($logSatatus['downloadStatus']['date'], 4, 2) . '-' . substr($logSatatus['downloadStatus']['date'], 6, 2);
                                         ?>
-                                        <p> <span class="item-detail-title">사용 만료일 &nbsp;:</span> <span class="item-detail-info"><?=$logSatatus['remainUseDays']?> 일 ( <?=$useEndDate?> 까지)</span></p>
-                                        <p> <span class="item-detail-title">다운 만료일 &nbsp;:</span> <span class="item-detail-info"><?=$logSatatus['remainDownDays']?> 일 ( <?=$downEndDate?> 까지)</span></p>
+                                        <p> <span class="item-detail-title">사용 만료일 &nbsp;:</span> <span class="item-detail-info"><?=$logSatatus['useStatus']['days']?> 일 ( <?=$useEndDate?> 까지)</span></p>
+                                        <p> <span class="item-detail-title">다운 만료일 &nbsp;:</span> <span class="item-detail-info"><?=$logSatatus['downloadStatus']['days']?> 일 ( <?=$downEndDate?> 까지)</span></p>
                                     </dd>
                                     <dd>
                                         <?php

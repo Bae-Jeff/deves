@@ -36,8 +36,8 @@ class ExtShopItemOrder {
     }
 
     public function getLogOrders($params){
-        $page = $params['page']??1;
-        $perPage = $params['per_page']??10;
+        $page = !empty($params['page'])??1;
+        $perPage = !empty($params['per_page'])??10;
         $this->params =  $params;
         $this->checkValidParams([
             'parent_uuid',

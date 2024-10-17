@@ -1,6 +1,7 @@
 <?php
 header('Access-Control-Allow-Origin: *');
-
+error_reporting(E_ERROR); // 모든 오류 보고
+ini_set('display_errors', 1); // 오류를 화면에 표시
 // API 요청 처리
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     include_once('../common.php');
@@ -12,10 +13,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
     switch ($method) {
         case 'getItems':
+            error_reporting(E_ERROR); // 모든 오류 보고
+            ini_set('display_errors', 1); // 오류를 화면에 표시
             if (isset($_GET['member_id'])) {
                 $member_id = $_GET['member_id'];
                 $token = $_GET['token'];
-                $rsKeyLogs = $extItemLog->getKeyLogs(['member_id' => $member_id]);
+                $rsKeyLogs = $extItemLog->getKeyLogs([
+                    'member_id' => $member_id,
+                    'page' => !(empty($_GET['page']))??1,
+                    'per_page' => !(empty($_GET['per_page']))??10,
+                ]);
                 resonseJson($rsKeyLogs);
             } else {
                 http_response_code(400);
@@ -37,7 +44,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         case 'getItemOrders':
             if (isset($_GET['uuid'])) {
                 $uuid = $_GET['uuid'];
-                $rsItemOrders = $extItemLog->getLogDetail(['uuid' => $uuid]);
+                $rsItemOrders = $extItemLog->getLogDetail([
+                    'uuid' => $uuid,
+                    'page' => !(empty($_GET['page']))??1,
+                    'per_page' => !(empty($_GET['per_page']))??10,
+                ]);
                 resonseJson($rsItemOrders);
             } else {
                 http_response_code(400);
