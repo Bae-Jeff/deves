@@ -47,6 +47,7 @@ class ExtShopItemOrder {
             ->where([
                 'ex_order_parent' => $params['parent_uuid']
             ])
+            ->join('g5_shop_order', 'g5_shop_order.od_id = ext_shop_item_orders.order_id')
             ->paginate($page,$perPage);
        return $this->response($orders);
     }

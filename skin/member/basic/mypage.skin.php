@@ -219,19 +219,19 @@ if($header_skin)
             ]);
             ?>
             <div class="table-responsive">
-                <table class="table mypage-tbl">
+                <table class="table mypage-tbl my-items">
                     <thead>
-                    <tr>
-                        <th scope="col">상품</th>
-                        <th scope="col">상세</th>
-                        <th scope="col"></th>
-                    </tr>
+                        <tr>
+                            <th scope="col">상품</th>
+                            <th scope="col">상세</th>
+                            <th scope="col"></th>
+                        </tr>
                     </thead>
                     <tbody>
                     <?php
                     if(count($rsLogs['data']) > 0) {
                         foreach ($rsLogs['data'] as $lKey => $exRow) {
-                            $logSatatus = $extItemLog->getLogItemStatus(['uuid' => $exRow['uuid']]);
+                            $logStatus = $extItemLog->getLogItemStatus(['uuid' => $exRow['uuid']]);
                             $logDetail = $extItemLog->getLogDetail(['uuid' => $exRow['uuid']]);
                             $itemImage = get_it_thumbnail($exRow['it_img1'], 150, 150);
                     ?>
@@ -263,22 +263,18 @@ if($header_skin)
                                     </dd>
                                     <dd>
                                         <?php
-                                        $useEndDate = substr($logSatatus['useStatus']['date'], 0, 4) . '-' . substr($logSatatus['useStatus']['date'], 4, 2) . '-' . substr($logSatatus['useStatus']['date'], 6, 2);
-                                        $downEndDate = substr($logSatatus['downloadStatus']['date'], 0, 4) . '-' . substr($logSatatus['downloadStatus']['date'], 4, 2) . '-' . substr($logSatatus['downloadStatus']['date'], 6, 2);
+                                        $useEndDate = substr($logStatus['useStatus']['date'], 0, 4) . '-' . substr($logStatus['useStatus']['date'], 4, 2) . '-' . substr($logStatus['useStatus']['date'], 6, 2);
+                                        $downEndDate = substr($logStatus['downloadStatus']['date'], 0, 4) . '-' . substr($logStatus['downloadStatus']['date'], 4, 2) . '-' . substr($logStatus['downloadStatus']['date'], 6, 2);
                                         ?>
-                                        <p> <span class="item-detail-title">사용 만료일 &nbsp;:</span> <span class="item-detail-info"><?=$logSatatus['useStatus']['days']?> 일 ( <?=$useEndDate?> 까지)</span></p>
-                                        <p> <span class="item-detail-title">다운 만료일 &nbsp;:</span> <span class="item-detail-info"><?=$logSatatus['downloadStatus']['days']?> 일 ( <?=$downEndDate?> 까지)</span></p>
+                                        <p> <span class="item-detail-title">사용 만료일 &nbsp;:</span> <span class="item-detail-info"><?=$logStatus['useStatus']['days']?> 일 ( <?=$useEndDate?> 까지)</span></p>
+                                        <p> <span class="item-detail-title">다운 만료일 &nbsp;:</span> <span class="item-detail-info"><?=$logStatus['downloadStatus']['days']?> 일 ( <?=$downEndDate?> 까지)</span></p>
                                     </dd>
-                                    <dd>
-                                        <?php
-//                                        dump($logDetail);
-                                        ?>
-                                    </dd>
+                                    <dd id="item_orders_<?=$exRow['uuid']?>" style="padding-top: 30px;"></dd>
                                 </dl>
                             </td>
                             <td>
-                                <p><button class="btn btn-black btn-block">주문상세</button> </p>
-                                <p><button class="btn btn-color btn-block">삭제</button> </p>
+                                <p><button class="btn btn-black btn-block" onclick="getItemOrders('<?=$exRow['uuid']?>')">주문내역</button> </p>
+<!--                                <p><button class="btn btn-color btn-block">삭제</button> </p>-->
                             </td>
                         </tr>
                     <?php }
@@ -288,10 +284,114 @@ if($header_skin)
                     <?
                     }
                     ?>
-
                     </tbody>
                 </table>
             </div>
+            <script type="application/javascript">
+
+                function getItemOrders(uuid,page){
+                    let htmlOrderTable = '';
+                    $.get('<?=G5_URL?>/api/v1.php?method=getItemOrders&page='+page+'&uuid='+uuid,function(response){
+                        // console.log(response);
+                        if(response.result.data.length > 0){
+                            htmlOrderTable = renderOrder(response.result,uuid);
+                        }else{
+                            htmlOrderTable = `
+                            <table class="table mypage-tbl">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">주문일시</th>
+                                        <th scope="col">주문번호</th>
+                                        <th scope="col">수량</th>
+                                        <th scope="col">주문금액</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td colspan="4">주문내용을 불러올 수 없습니다.</td></tr>
+                                </tbody>
+                            </table>
+                            `;
+                        }
+                        $('#item_orders_'+uuid).html(htmlOrderTable).find('[data-page="'+page+'"]').parent().removeAttr('href').addClass('active');
+                    });
+                }
+                function renderOrder(result,uuid){
+                    // console.log(result.data);
+                    let orders = result.data;
+                    let pagging = {
+                        current_page: result.current_page,
+                        last_page: result.last_page
+                    }
+                    let orderTable = `
+                    <table class="table mypage-tbl">
+                        <thead>
+                            <tr>
+                                <th scope="col">주문일시</th>
+                                <th scope="col">주문번호</th>
+                                <th scope="col">수량</th>
+                                <th scope="col">주문금액</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                    `;
+                    $.each(orders, function(index, order){
+                        orderTable += `
+                            <tr>
+                                <td>`+order.od_time+`</td>
+                                <td><a target="_order_detail" href="<?=G5_URL?>/shop/orderinquiryview.php?od_id=`+order.order_id+`">`+order.order_id+`</a></td>
+                                <td>`+order.od_cart_count+`</td>
+                                <td>`+order.od_misu+` 원</td>
+                            </tr>
+                        `;
+                    });
+                    orderTable += `
+                            </tbody>
+                        </table>
+                    `;
+                    orderTable += renderPagination(pagging,uuid);
+                    return orderTable;
+                }
+                function renderPagination(pagination,uuid) {
+                    let paginationContainer = '<div class="text-right"><ul class="pagination pagination-sm en" style="margin-top:0; padding-top:0;">';  // 기존 페이지네이션 초기화
+
+                    // 현재 URL에서 page 파라미터 제거한 URL 생성
+                    const urlWithoutPage = window.location.href.replace(/([&?])page=[^&]+/, '');
+                    const querySeparator = urlWithoutPage.includes('?') ? '&' : '?';
+
+                    // 왼쪽 화살표 (처음, 이전 페이지)
+                    if (pagination.current_page > 1) {
+                        paginationContainer += `
+            <li><a href="javascript:getItemOrders('`+uuid+`',1)" data-page="1"><i class="fa fa-angle-double-left"></i></a></li>
+            <li><a href="javascript:getItemOrders('`+uuid+`',${pagination.current_page - 1})" data-page="${pagination.current_page - 1}"><i class="fa fa-angle-left"></i></a></li>`;
+                    } else {
+                        paginationContainer += `
+            <li class="disabled"><a><i class="fa fa-angle-double-left"></i></a></li>
+            <li class="disabled"><a><i class="fa fa-angle-left"></i></a></li>`;
+                    }
+
+                    // 페이지 번호
+                    for (let i = 1; i <= pagination.last_page; i++) {
+                        if (i === pagination.current_page) {
+                            paginationContainer += `<li class="active"><a href="javascript:void(0);">${i}</a></li>`;
+                        } else {
+                            paginationContainer += `<li><a href="javascript:getItemOrders('`+uuid+`',${i})" data-page="${i}">${i}</a></li>`;
+                        }
+                    }
+
+                    // 오른쪽 화살표 (다음, 마지막 페이지)
+                    if (pagination.current_page < pagination.last_page) {
+                        paginationContainer += `
+            <li><a href="javascript:getItemOrders('`+uuid+`',${pagination.current_page + 1})" data-page="${pagination.current_page + 1}"><i class="fa fa-angle-right"></i></a></li>
+            <li><a href="javascript:getItemOrders('`+uuid+`',${pagination.last_page}" data-page="${pagination.last_page}"><i class="fa fa-angle-double-right"></i></a></li>`;
+                    } else {
+                        paginationContainer += `
+            <li class="disabled"><a><i class="fa fa-angle-right"></i></a></li>
+            <li class="disabled"><a><i class="fa fa-angle-double-right"></i></a></li>`;
+                    }
+                    paginationContainer += '</ul></div>';
+                    return paginationContainer;
+                }
+            </script>
             <div class="text-center">
                 <?php
                 echo $db->renderPagination([
