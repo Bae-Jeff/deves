@@ -77,7 +77,7 @@ function resonseJson($params){
                 'currentPage' => 0,
             ]
         ]
-    ],JSON_PRETTY_PRINT);
+    ],JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     exit;
 }
 
