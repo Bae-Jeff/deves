@@ -311,6 +311,48 @@ class DB
     {
         $this->connection->close();
     }
+    public function renderPagination($pagination) {
+
+        // 현재 URL에서 쿼리스트링을 제거한 베이스 URL 구하기
+        $urlWithoutPage = preg_replace('/([&?])page=[^&]+/', '', $_SERVER['REQUEST_URI']);
+
+        // URL에 이미 다른 파라미터가 있는지 확인
+        $querySeparator = strpos($urlWithoutPage, '?') === false ? '?' : '&';
+
+        $html = '<ul class="pagination pagination-sm en" style="margin-top:0; padding-top:0;">';
+
+        // 왼쪽 화살표 (처음, 이전 페이지)
+        if ($pagination['current_page'] > 1) {
+            $html .= '<li><a href="' . $urlWithoutPage . $querySeparator . 'page=1" data-page="1"><i class="fa fa-angle-double-left"></i></a></li>';
+            $html .= '<li><a href="' . $urlWithoutPage . $querySeparator . 'page=' . ($pagination['current_page'] - 1) . '" data-page="' . ($pagination['current_page'] - 1) . '"><i class="fa fa-angle-left"></i></a></li>';
+        } else {
+            $html .= '<li class="disabled"><a><i class="fa fa-angle-double-left"></i></a></li>';
+            $html .= '<li class="disabled"><a><i class="fa fa-angle-left"></i></a></li>';
+        }
+
+        // 페이지 번호
+        for ($i = 1; $i <= $pagination['last_page']; $i++) {
+            if ($i == (int)$pagination['current_page']) { // 현재 페이지가 active
+                $html .= '<li class="active"><a href="#">' . $i . '</a></li>';
+            } else {
+                $html .= '<li><a href="' . $urlWithoutPage . $querySeparator . 'page=' . $i . '" data-page="' . $i . '">' . $i . '</a></li>';
+            }
+        }
+
+        // 오른쪽 화살표 (다음, 마지막 페이지)
+        if ($pagination['current_page'] < $pagination['last_page']) {
+            $html .= '<li><a href="' . $urlWithoutPage . $querySeparator . 'page=' . ($pagination['current_page'] + 1) . '" data-page="' . ($pagination['current_page'] + 1) . '"><i class="fa fa-angle-right"></i></a></li>';
+            $html .= '<li><a href="' . $urlWithoutPage . $querySeparator . 'page=' . $pagination['last_page'] . '" data-page="' . $pagination['last_page'] . '"><i class="fa fa-angle-double-right"></i></a></li>';
+        } else {
+            $html .= '<li class="disabled"><a><i class="fa fa-angle-right"></i></a></li>';
+            $html .= '<li class="disabled"><a><i class="fa fa-angle-double-right"></i></a></li>';
+        }
+
+        $html .= '</ul>';
+        return $html;
+    }
+
+
 }
 
 

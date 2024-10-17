@@ -209,12 +209,13 @@ if($header_skin)
                 .item-row { background: #fbfbfb; padding: 13px 15px; border-radius: 3px; border: 1px solid #dcdcdc; margin: 0px; }
                 .item-row .item-name { font-weight: bold; font-size: 16px; margin-bottom: 10px; border-bottom: 1px solid #dcdcdc; text-align: left; padding: 4px 0px; }
                 .item-row dd { text-align: left; }
-                .item-row .item-detail-title { display: inline-block; width: 19%; text-align: right; padding-right: 10px;    font-weight: 800; }
+                .item-row .item-detail-title { display: inline-block; width: 22%; text-align: right; padding-right: 10px;    font-weight: 800; }
                 .item-row .item-detail-info { font-weight: 800; font-size: 12px; }
             </style>
             <?php
             $rsLogs = $extItemLog->getKeyLogs([
-                'member_id'=> $member['mb_id']
+                'member_id'=> $member['mb_id'],
+                'page' => $_GET['page']
             ]);
             ?>
             <div class="table-responsive">
@@ -290,6 +291,16 @@ if($header_skin)
 
                     </tbody>
                 </table>
+            </div>
+            <div class="text-center">
+                <?php
+                echo $db->renderPagination([
+                    'total' => $rsLogs['total'],
+                    'per_page' => $rsLogs['per_page'],
+                    'current_page' => $rsLogs['current_page'],
+                    'last_page' => $rsLogs['last_page']
+                ]);
+                ?>
             </div>
         </section>
 		<!-- 최근 주문내역 시작 { -->
