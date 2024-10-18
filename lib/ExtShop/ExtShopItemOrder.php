@@ -44,6 +44,7 @@ class ExtShopItemOrder {
         ]);
         $orders = $this->db->select([
             'eo.*',
+            'oo.od_id',
             'oo.od_misu',
             'oo.od_cart_count',
             ''
