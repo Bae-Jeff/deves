@@ -44,16 +44,16 @@ class ExtShopItemOrder {
         ]);
         $orders = $this->db->select([
             'eo.*',
+            '00.od_time',
             'oo.od_id',
             'oo.od_misu',
             'oo.od_cart_count',
-            ''
         ])
         ->from('ext_shop_item_orders eo')
         ->where([
             'ex_order_parent' => $params['parent_uuid']
         ])
-        ->join('g5_shop_order oo', 'g5_shop_order.od_id = ext_shop_item_orders.order_id')
+        ->join('g5_shop_order oo', 'oo.od_id = eo.order_id')
         ->paginate($page,$perPage);
        return $this->response($orders);
     }
