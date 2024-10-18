@@ -269,7 +269,7 @@ if($header_skin)
                                         <p> <span class="item-detail-title">사용 만료일 &nbsp;:</span> <span class="item-detail-info"><?=$logStatus['useStatus']['days']?> 일 ( <?=$useEndDate?> 까지)</span></p>
                                         <p> <span class="item-detail-title">다운 만료일 &nbsp;:</span> <span class="item-detail-info"><?=$logStatus['downloadStatus']['days']?> 일 ( <?=$downEndDate?> 까지)</span></p>
                                     </dd>
-                                    <dd id="item_orders_<?=$exRow['uuid']?>" style="padding-top: 30px;"></dd>
+                                    <dd id="item_orders_<?=$exRow['uuid']?>" style="padding-top: 30px; display: none;"></dd>
                                 </dl>
                             </td>
                             <td>
@@ -290,6 +290,11 @@ if($header_skin)
             <script type="application/javascript">
 
                 function getItemOrders(uuid,page){
+                    let targetOrderWrap = $('#item_orders_'+uuid);
+                    if(targetOrderWrap.is(':visible')){
+                        targetOrderWrap.hide();
+                        return false;
+                    }
                     let htmlOrderTable = '';
                     $.get('<?=G5_URL?>/api/v1.php?method=getItemOrders&page='+page+'&uuid='+uuid,function(response){
                         // console.log(response);
@@ -312,7 +317,7 @@ if($header_skin)
                             </table>
                             `;
                         }
-                        $('#item_orders_'+uuid).html(htmlOrderTable).find('[data-page="'+page+'"]').parent().removeAttr('href').addClass('active');
+                        targetOrderWrap.html(htmlOrderTable).show().find('[data-page="'+page+'"]').parent().removeAttr('href').addClass('active');
                     });
                 }
                 function renderOrder(result,uuid){
