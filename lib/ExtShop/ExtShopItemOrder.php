@@ -42,13 +42,18 @@ class ExtShopItemOrder {
         $this->checkValidParams([
             'parent_uuid',
         ]);
-        $orders = $this->db->select(['*'])
-            ->from('ext_shop_item_orders')
-            ->where([
-                'ex_order_parent' => $params['parent_uuid']
-            ])
-            ->join('g5_shop_order', 'g5_shop_order.od_id = ext_shop_item_orders.order_id')
-            ->paginate($page,$perPage);
+        $orders = $this->db->select([
+            'eo.*',
+            'oo.od_misu',
+            'oo.od_cart_count',
+            ''
+        ])
+        ->from('ext_shop_item_orders eo')
+        ->where([
+            'ex_order_parent' => $params['parent_uuid']
+        ])
+        ->join('g5_shop_order oo', 'g5_shop_order.od_id = ext_shop_item_orders.order_id')
+        ->paginate($page,$perPage);
        return $this->response($orders);
     }
     public function updateExtOrderStatus($params){
