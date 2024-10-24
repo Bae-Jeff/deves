@@ -2,7 +2,7 @@
 
 class ExtShopItemLog {
     protected $db;
-    protected $isApi = false;
+    public $isApi = false;
     protected $params = [];
     protected $table = [
         'uuid',
@@ -205,15 +205,27 @@ class ExtShopItemLog {
         if($expirationDateDown < $today){
             $remainDownDays = -1 *  $remainDownDays;
         }
-
+        if($remainDownDays > 0){
+            $linkKeys = $this->db->select(['item_ext_link_key','item_ext_link_name'])
+                ->from('ext_shop_item')
+                ->where([
+                    'item_id' => $activeLog['item_id'],
+                    'extend_type' => 'L'
+                ])
+                ->get();
+        }else{
+            $linkKeys = [];
+        }
         return $this->response([
+            'itemId' => $activeLog['item_id'],
             'useStatus' => [
                 'days' => $remainUseDays <= 1 ? 0: $remainUseDays,
                 'date' => $expirationUseDate
             ],
             'downloadStatus' => [
                 'days' => $remainDownDays <= 1 ? 0: $remainDownDays,
-                'date' => $expirationDownDate
+                'date' => $expirationDownDate,
+                'linkKeys' => $linkKeys
             ]
         ]);
     }

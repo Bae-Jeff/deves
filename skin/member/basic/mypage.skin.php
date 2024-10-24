@@ -274,7 +274,13 @@ if($header_skin)
                             </td>
                             <td>
                                 <p><button class="btn btn-black btn-block" onclick="getItemOrders('<?=$exRow['uuid']?>')">주문내역</button> </p>
-<!--                                <p><button class="btn btn-color btn-block">삭제</button> </p>-->
+                                <?php
+                                if(!empty($logStatus['downloadStatus']['linkKeys'])){
+                                    foreach($logStatus['downloadStatus']['linkKeys'] as $key=>$link) {
+                                        echo '<p><a href="' . G5_URL . '/api/v1.php?method=download&uuid=' . $exRow['uuid'] . '&link_key=' . $link['item_ext_link_key'] . '" target="_blank" class="btn btn-color btn-block">다운로드(' . $link['item_ext_link_name'] . ')</a> </p>';
+                                    }
+                                }
+                                ?>
                             </td>
                         </tr>
                     <?php }
