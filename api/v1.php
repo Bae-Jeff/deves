@@ -55,7 +55,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                 resonseJson(["error" => "Missing uuid parameter"]);
             }
             break;
+        case 'download':
+            if (isset($_GET['uuid']) && isset($_GET['link_key'])) {
+                $rsItemStatus = $extItemLog->getLogItemStatus(['uuid' => $_GET['uuid']]);
+                dump($rsItemStatus);
 
+                $link_key = $_GET['link_key'];
+                $rsDownloadLink = $db->select(['item_ext_link'])
+                ->from('ext_shop_item')
+                ->where([
+                    'item_ext_link_key' => $link_key,
+                    'item_ext_status' => 'U'
+                ])
+                ->getOne();
+                // 해당링크로 이동
+                if($rsDownloadLink){
+                    header('Location: '.$rsDownloadLink['item_ext_link']);
+                }else{
+                    // 해당링크가 없을경우 alert
+                    http_response_code(400);
+                }
+            } else {
+                http_response_code(400);
+                resonseJson(["error" => "Missing link_key parameter"]);
+            }
+            break;
         default:
             http_response_code(404);
             resonseJson(["error" => "Endpoint not found"]);
@@ -77,7 +101,7 @@ function resonseJson($params){
 
 
 /*
-
+https://deves.mycafe24.com/api/v1.php?method=download&link_key=1727453788342VT5NLU
 https://deves.mycafe24.com/api/v1.php?method=getItems&member_id=admin&page=2&per_page=2
 https://deves.mycafe24.com/api/v1.php?method=getItemStatus&uuid=256718fa-387d-4684-9a74-0e60b15ea28d
 https://deves.mycafe24.com/api/v1.php?method=getItemOrders&uuid=256718fa-387d-4684-9a74-0e60b15ea28d&page=1&per_page=1
