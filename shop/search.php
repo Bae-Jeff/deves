@@ -202,7 +202,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 	$list[$i]['num'] = $num;
 	$num--;
 }
-
+$searchedList = $list;
 $admin_href = ($is_admin) ? G5_ADMIN_URL.'/shop_admin/configform.php#anc_scf_etc' : '';
 
 $write_pages = G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'];

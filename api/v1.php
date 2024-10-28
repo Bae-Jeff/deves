@@ -13,14 +13,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
     switch ($method) {
         case 'getItemInfo':
-            $itemId = $_GET('item_id')??null;
+            $itemId = $_GET['item_id']??null;
             if(!empty($itemId)) {
-                $rsItemInfo = $this->db->select(['*'])
+                $rsItemInfo = $db->select(['*'])
                 ->from('g5_shop_item')
                 ->join('ext_shop_item',[
                     'ext_shop_item.it_id = ext_shop_item.item_id',
                 ])
-                ->where(['g5_shop_item' => $itemId])
+                ->where(['g5_shop_item.it_id' => $itemId])
                 ->get();
                 resonseJson($rsItemInfo);
             }else{

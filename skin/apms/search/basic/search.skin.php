@@ -1,6 +1,6 @@
 <?php
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
-
+$list = $searchedList;
 //자동높이조절
 apms_script('imagesloaded');
 apms_script('height');
