@@ -12,7 +12,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $method = isset($_GET['method']) ? $_GET['method'] : '';
 
     switch ($method) {
-
+        case 'getItemInfo':
+            $itemId = $_GET('item_id')??null;
+            if(!empty($itemId)) {
+                $rsItemInfo = $this->db->select(['*'])
+                ->from('g5_shop_item')
+                ->join('ext_shop_item',[
+                    'ext_shop_item.it_id = ext_shop_item.item_id',
+                ])
+                ->where(['g5_shop_item' => $itemId])
+                ->get();
+                resonseJson($rsItemInfo);
+            }else{
+                http_response_code(400);
+                resonseJson(["error" => "Missing user_id parameter"]);
+            }
+            break;
         case 'getItems':
             error_reporting(E_ERROR); // 모든 오류 보고
             ini_set('display_errors', 1); // 오류를 화면에 표시
@@ -115,8 +130,8 @@ function resonseJson($params){
 
 /*
 https://deves.mycafe24.com/api/v1.php?method=download&uuid=70d14244-5d46-4d58-b33b-dbc184831246&link_key=1727453788342VT5NLU
-https://deves.mycafe24.com/api/v1.php?method=getItems&member_id=admin&page=2&per_page=2
+https://deves.mycafe24.com/api/v1.php?method=getItems&member_id=admin&page=2&per_page=20
 https://deves.mycafe24.com/api/v1.php?method=getItemStatus&uuid=256718fa-387d-4684-9a74-0e60b15ea28d
-https://deves.mycafe24.com/api/v1.php?method=getItemOrders&uuid=256718fa-387d-4684-9a74-0e60b15ea28d&page=1&per_page=1
+https://deves.mycafe24.com/api/v1.php?method=getItemOrders&uuid=256718fa-387d-4684-9a74-0e60b15ea28d&page=1&per_page=20
 
  * */
