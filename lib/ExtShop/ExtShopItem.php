@@ -22,6 +22,20 @@ class ExtShopItem {
         ],JSON_PRETTY_PRINT);
         exit;
     }
+    public function getItemInfo($params){
+        $rsItem = $this->db->select(['*'])
+            ->from('ext_shop_item')
+            ->join('g5_shop_item','ext_shop_item.item_id = g5_shop_item.it_id')
+            ->where([
+                'ext_shop_item.item_id' => $params['item_id']
+            ])
+            ->getOne();
+        if($this->isApi){
+            $this->returnJson($rsItem);
+        }else{
+            return $rsItem;
+        }
+    }
     public function getItemVersion($params){
         $rsVersion = $this->db->select(['*'])
             ->from('ext_shop_item')

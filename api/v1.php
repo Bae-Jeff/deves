@@ -8,6 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     include_once(G5_LIB_PATH.'/ExtShop/ExtShopItem.php');
     include_once(G5_LIB_PATH.'/ExtShop/ExtShopItemLog.php');
     include_once(G5_LIB_PATH.'/ExtShop/ExtShopItemOrder.php');
+    $extItem = new ExtShopItem($db,true);
     $extItemLog = new ExtShopItemLog($db,true);
     $method = isset($_GET['method']) ? $_GET['method'] : '';
 
@@ -15,13 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         case 'getItemInfo':
             $itemId = $_GET['item_id']??null;
             if(!empty($itemId)) {
-                $rsItemInfo = $db->select(['*'])
-                ->from('g5_shop_item')
-                ->join('ext_shop_item',[
-                    'ext_shop_item.it_id = ext_shop_item.item_id',
-                ])
-                ->where(['g5_shop_item.it_id' => $itemId])
-                ->get();
+                $rsItemInfo = $extItem->getItemInfo(['item_id' => $itemId]);
                 resonseJson($rsItemInfo);
             }else{
                 http_response_code(400);
