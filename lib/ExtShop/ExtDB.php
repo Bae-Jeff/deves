@@ -126,7 +126,7 @@ class DB
         }
 
         // 기본적으로 ORDER BY id DESC 추가
-        $sql .= " ORDER BY id DESC";
+        // $sql .= " ORDER BY id DESC";
 
         // LIMIT 1 설정
         $sql .= " LIMIT 1";
