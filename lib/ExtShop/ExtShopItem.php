@@ -26,9 +26,9 @@ class ExtShopItem {
         $itemId = $params['item_id']??null;
         $rsItem = $this->db->select(['*'])
             ->from('g5_shop_item')
-            ->where(
-                ['item_id' => $itemId]
-            )
+            ->where([
+                'it_id' => $itemId
+            ])
             ->getOne();
         if(!empty($rsItem)){
             $itemVersion = $this->getItemVersion(['item_id' => $itemId]);
