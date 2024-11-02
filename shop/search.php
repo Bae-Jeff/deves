@@ -202,7 +202,6 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 	$list[$i]['num'] = $num;
 	$num--;
 }
-
 $search_list = $list;
 $admin_href = ($is_admin) ? G5_ADMIN_URL.'/shop_admin/configform.php#anc_scf_etc' : '';
 

@@ -3,7 +3,7 @@
   <component name="WebServers">
     <option name="servers">
       <webServer id="07b29d80-15e2-4921-ada4-f5f1cc956150" name="deves_cafe24">
-        <fileTransfer rootFolder="/deves" accessType="SFTP" host="deves.mycafe24.com" port="22" sshConfigId="c229f236-0a6a-456d-8c7a-42bc645f7f83" sshConfig="deves@deves.mycafe24.com:22 password">
+        <fileTransfer rootFolder="/deves/www" accessType="SFTP" host="deves.mycafe24.com" port="22" sshConfigId="c229f236-0a6a-456d-8c7a-42bc645f7f83" sshConfig="deves@deves.mycafe24.com:22 password">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>
