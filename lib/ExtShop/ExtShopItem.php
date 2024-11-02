@@ -18,7 +18,7 @@ class ExtShopItem {
         echo json_encode([
             'code' => $code,
             'message' => $message,
-            'resutl' => $data
+            'result' => $data
         ],JSON_PRETTY_PRINT);
         exit;
     }
