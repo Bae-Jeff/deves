@@ -31,10 +31,11 @@ class ExtShopItem {
             ])
             ->getOne();
         if(!empty($rsItem)){
-            $itemVersion = $this->getItemVersion(['item_id' => $itemId]);
+
+            $itemVersion = $this->getItemVersion(['item_id' => $itemId],false);
             $rsItem['version'] = $itemVersion;
 
-            $itemLinks = $this->getItemLinks(['item_id' => $itemId]);
+            $itemLinks = $this->getItemLinks(['item_id' => $itemId],false);
             $rsItem['links'] = $itemLinks;
         }
 
@@ -44,8 +45,14 @@ class ExtShopItem {
             return $rsItem;
         }
     }
-    public function getItemVersion($params){
-        $rsVersion = $this->db->select(['*'])
+    public function getItemVersion($params,$returnApi = true){
+        $rsVersion = $this->db->select([
+                'item_version',
+                'item_buy_count',
+                'item_download_days',
+                'item_use_days',
+                'item_ext_status'
+            ])
             ->from('ext_shop_item')
             ->where([
                 'item_target' => $params['item_target']??'A',
@@ -53,7 +60,12 @@ class ExtShopItem {
                 'extend_type'=> 'I'
             ])
             ->getOne();
-        return $rsVersion;
+
+        if($this->isApi && $returnApi){
+            $this->returnJson($rsVersion);
+        }else{
+            return $rsVersion;
+        }
     }
     public function setItemVersion($params){
         $itemVersion =$this->db->select(['*'])
@@ -123,8 +135,11 @@ class ExtShopItem {
             return $rsDelete;
         }
     }
-    public function getItemLinks($params){
-        $itemLinks = $this->db->select(['*'])
+    public function getItemLinks($params,$returnApi = true){
+        $itemLinks = $this->db->select([
+                'item_ext_link_key as link_key',
+                'item_ext_link_name as link_name'
+            ])
             ->from('ext_shop_item')
             ->where([
                 'item_target' => $params['item_target'],
@@ -133,7 +148,7 @@ class ExtShopItem {
                 'item_ext_status' => 'U'
             ])
             ->get();
-        if($this->isApi){
+        if($this->isApi && $returnApi){
             $this->returnJson($itemLinks);
         }else{
             return $itemLinks;
