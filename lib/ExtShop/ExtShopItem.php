@@ -23,13 +23,21 @@ class ExtShopItem {
         exit;
     }
     public function getItemInfo($params){
+        $itemId = $params['item_id']??null;
         $rsItem = $this->db->select(['*'])
-            ->from('ext_shop_item')
-            ->join('g5_shop_item','ext_shop_item.item_id = g5_shop_item.it_id')
-            ->where([
-                'ext_shop_item.item_id' => $params['item_id']
-            ])
+            ->from('g5_shop_item')
+            ->where(
+                ['item_id' => $itemId]
+            )
             ->getOne();
+        if(!empty($rsItem)){
+            $itemVersion = $this->getItemVersion(['item_id' => $itemId]);
+            $rsItem['version'] = $itemVersion;
+
+            $itemLinks = $this->getItemLinks(['item_id' => $itemId]);
+            $rsItem['links'] = $itemLinks;
+        }
+
         if($this->isApi){
             $this->returnJson($rsItem);
         }else{
