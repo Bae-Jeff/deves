@@ -1,5 +1,6 @@
 <?php
 //header('Access-Control-Allow-Origin: *');
+global $db;
 error_reporting(E_ERROR); // 모든 오류 보고
 ini_set('display_errors', 1); // 오류를 화면에 표시
 // API 요청 처리

@@ -71,7 +71,7 @@ class ExtShopItem {
         $itemVersion =$this->db->select(['*'])
             ->from('ext_shop_item')
             ->where([
-                'item_target' => $params['item_target'],
+                'item_target' => $params['item_target']??'A',
                 'item_id' => $params['item_id'],
                 'extend_type'=> 'I'
             ])
@@ -142,7 +142,7 @@ class ExtShopItem {
             ])
             ->from('ext_shop_item')
             ->where([
-                'item_target' => $params['item_target'],
+                'item_target' => $params['item_target']??'A',
                 'item_id' => $params['item_id'],
                 'extend_type' => 'L',
                 'item_ext_status' => 'U'
