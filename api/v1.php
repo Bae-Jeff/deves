@@ -125,9 +125,8 @@ function resonseJson($params){
 
 
 /*
-https://deves.mycafe24.com/api/v1.php?method=download&uuid=70d14244-5d46-4d58-b33b-dbc184831246&link_key=1727453788342VT5NLU
-https://deves.mycafe24.com/api/v1.php?method=getItems&member_id=admin&page=2&per_page=20
-https://deves.mycafe24.com/api/v1.php?method=getItemStatus&uuid=256718fa-387d-4684-9a74-0e60b15ea28d
-https://deves.mycafe24.com/api/v1.php?method=getItemOrders&uuid=256718fa-387d-4684-9a74-0e60b15ea28d&page=1&per_page=20
-
- * */
+https://localhost8080.cafe24.com/api/v1.php?method=getItems&member_id=admin&page=2&per_page=20
+https://localhost8080.cafe24.com/api/v1.php?method=getItemStatus&uuid=256718fa-387d-4684-9a74-0e60b15ea28d
+https://localhost8080.cafe24.com/api/v1.php?method=getItemOrders&uuid=256718fa-387d-4684-9a74-0e60b15ea28d&page=1&per_page=20
+https://localhost8080.cafe24.com/api/v1.php?method=download&uuid=70d14244-5d46-4d58-b33b-dbc184831246&link_key=1727453788342VT5NLU
+*/
