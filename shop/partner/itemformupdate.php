@@ -18,8 +18,8 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 
-echo '<pre>';
-include_once(G5_PATH.'/lib/ExtShop/item.extends.lib.php');
+//echo '<pre>';
+//include_once(G5_PATH.'/lib/ExtShop/item.extends.lib.php');
 
 @mkdir(G5_DATA_PATH."/item", G5_DIR_PERMISSION);
 @chmod(G5_DATA_PATH."/item", G5_DIR_PERMISSION);

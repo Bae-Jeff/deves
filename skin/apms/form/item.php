@@ -1,7 +1,7 @@
 <?php
 if (!defined('_GNUBOARD_')) exit;
 // Item extends info - 2024.04.10 -jeff
-include_once('../../lib/item.extends.lib.php');
+//include_once('../../lib/item.extends.lib.php');
 
 
 $pg_anchor ='<ul class="anchor">';

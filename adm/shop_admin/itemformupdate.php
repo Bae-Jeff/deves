@@ -16,7 +16,7 @@ check_admin_token();
 include_once('../apms_admin/apms.admin.lib.php');
 
 // Item extends info - 2024.04.10 -jeff
-include_once('../../lib/item.extends.lib.php');
+//include_once('../../lib/item.extends.lib.php');
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
