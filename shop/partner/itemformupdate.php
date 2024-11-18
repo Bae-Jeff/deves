@@ -19,7 +19,7 @@ error_reporting(E_ALL);
 
 
 echo '<pre>';
-include_once(G5_PATH.'/lib/item.extends.lib.php');
+include_once(G5_PATH.'/lib/ExtShop/item.extends.lib.php');
 
 @mkdir(G5_DATA_PATH."/item", G5_DIR_PERMISSION);
 @chmod(G5_DATA_PATH."/item", G5_DIR_PERMISSION);
