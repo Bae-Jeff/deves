@@ -841,12 +841,12 @@ $html_process = new html_process();
 
 ################################ extends
 // 모든 오류, 경고, 공지사항을 표시합니다.
-error_reporting(E_ERROR); // 모든 오류 보고
-ini_set('display_errors', 1); // 오류를 화면에 표시
+//error_reporting(E_ERROR); // 모든 오류 보고
+//ini_set('display_errors', 1); // 오류를 화면에 표시
 
 // 선택적으로 로그 파일에 기록할 수도 있습니다.
-ini_set('log_errors', 1); // 오류를 로그 파일에 기록
-ini_set('error_log', G5_LIB_PATH.'/ExtShop/logs/error-'.date('y-m-d').'.log'); // 로그 파일 경로 설정
+//ini_set('log_errors', 1); // 오류를 로그 파일에 기록
+//ini_set('error_log', G5_LIB_PATH.'/ExtShop/logs/error-'.date('y-m-d').'.log'); // 로그 파일 경로 설정
 
 include_once(G5_LIB_PATH.'/ExtShop/ExtDB.php');
 include_once(G5_LIB_PATH.'/ExtShop/ExtShopItem.php');

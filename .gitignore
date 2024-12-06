@@ -1,3 +1,7 @@
 .idea
 .idea/*
 /.idea
+data/
+data/*
+/data
+/data/*

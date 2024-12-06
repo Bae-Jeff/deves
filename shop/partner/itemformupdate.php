@@ -13,13 +13,11 @@ if($is_auth || $is_partner) {
 } else {
 	alert('판매자(셀러) 파트너만 이용가능합니다.', APMS_PARTNER_URL);
 }
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+//ini_set('display_errors', 1);
+//ini_set('display_startup_errors', 1);
+//error_reporting(E_ALL);
 
-
-//echo '<pre>';
-//include_once(G5_PATH.'/lib/ExtShop/item.extends.lib.php');
+ 
 
 @mkdir(G5_DATA_PATH."/item", G5_DIR_PERMISSION);
 @chmod(G5_DATA_PATH."/item", G5_DIR_PERMISSION);
