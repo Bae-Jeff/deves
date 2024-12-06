@@ -142,61 +142,61 @@ if($w == "u") {
 $it_img_dir = G5_DATA_PATH.'/item';
 
 // 파일삭제
-if ($it_img1_del) {
+if (!empty($it_img1_del)) {
     $file_img1 = $it_img_dir.'/'.clean_relative_paths($it_img1);
     @unlink($file_img1);
     delete_item_thumbnail(dirname($file_img1), basename($file_img1));
     $it_img1 = '';
 }
-if ($it_img2_del) {
+if (!empty($it_img2_del)) {
     $file_img2 = $it_img_dir.'/'.clean_relative_paths($it_img2);
     @unlink($file_img2);
     delete_item_thumbnail(dirname($file_img2), basename($file_img2));
     $it_img2 = '';
 }
-if ($it_img3_del) {
+if (!empty($it_img3_del)) {
     $file_img3 = $it_img_dir.'/'.clean_relative_paths($it_img3);
     @unlink($file_img3);
     delete_item_thumbnail(dirname($file_img3), basename($file_img3));
     $it_img3 = '';
 }
-if ($it_img4_del) {
+if (!empty($it_img4_del)) {
     $file_img4 = $it_img_dir.'/'.clean_relative_paths($it_img4);
     @unlink($file_img4);
     delete_item_thumbnail(dirname($file_img4), basename($file_img4));
     $it_img4 = '';
 }
-if ($it_img5_del) {
+if (!empty($it_img5_del)) {
     $file_img5 = $it_img_dir.'/'.clean_relative_paths($it_img5);
     @unlink($file_img5);
     delete_item_thumbnail(dirname($file_img5), basename($file_img5));
     $it_img5 = '';
 }
-if ($it_img6_del) {
+if (!empty($it_img6_del)) {
     $file_img6 = $it_img_dir.'/'.clean_relative_paths($it_img6);
     @unlink($file_img6);
     delete_item_thumbnail(dirname($file_img6), basename($file_img6));
     $it_img6 = '';
 }
-if ($it_img7_del) {
+if (!empty($it_img7_del)) {
     $file_img7 = $it_img_dir.'/'.clean_relative_paths($it_img7);
     @unlink($file_img7);
     delete_item_thumbnail(dirname($file_img7), basename($file_img7));
     $it_img7 = '';
 }
-if ($it_img8_del) {
+if (!empty($it_img8_del)) {
     $file_img8 = $it_img_dir.'/'.clean_relative_paths($it_img8);
     @unlink($file_img8);
     delete_item_thumbnail(dirname($file_img8), basename($file_img8));
     $it_img8 = '';
 }
-if ($it_img9_del) {
+if (!empty($it_img9_del)) {
     $file_img9 = $it_img_dir.'/'.clean_relative_paths($it_img9);
     @unlink($file_img9);
     delete_item_thumbnail(dirname($file_img9), basename($file_img9));
     $it_img9 = '';
 }
-if ($it_img10_del) {
+if (!empty($it_img10_del)) {
     $file_img10 = $it_img_dir.'/'.clean_relative_paths($it_img10);
     @unlink($file_img10);
     delete_item_thumbnail(dirname($file_img10), basename($file_img10));
@@ -359,8 +359,8 @@ if($supply_count) {
 // 상품요약정보
 $value_array = array();
 for($i=0; $i<count($_POST['ii_article']); $i++) {
-    $key = $_POST['ii_article'][$i];
-    $val = $_POST['ii_value'][$i];
+    $key = isset($_POST['ii_article'][$i]) ? strip_tags($_POST['ii_article'][$i], '<br><span><strong><b>') : '';
+    $val = isset($_POST['ii_value'][$i]) ? strip_tags($_POST['ii_value'][$i], '<br><span><strong><b>') : '';
     $value_array[$key] = $val;
 }
 $it_info_value = addslashes(serialize($value_array));
@@ -413,12 +413,10 @@ if ($it_name == "")
 $is_reserve = ($default['pt_reserve_end'] > 0 && $default['pt_reserve_day'] > 0 && $default['pt_reserve_cache'] > 0) ? true : false;
 $is_reserve = ($is_reserve && ($is_admin == 'super' || $default['pt_reserve_use'] == "1")) ? true : false;
 
-if($pt_reserve_use && $is_reserve) {
-	if(!$pt_reserve) {
-		$pt_reserve_time = "{$pt_reserve_date} {$pt_reserve_hour}:{$pt_reserve_minute}:00";
-		$pt_reserve = strtotime($pt_reserve_time);
-		$it_use = 0;
-	}
+if(!empty($pt_reserve_use) && $is_reserve) {
+	$pt_reserve_time = "{$pt_reserve_date} {$pt_reserve_hour}:{$pt_reserve_minute}:00";
+	$pt_reserve = strtotime($pt_reserve_time);
+	$it_use = 0;
 } else {
 	$pt_reserve_use = 0;
 	$pt_reserve = 0;
